@@ -23,7 +23,8 @@ const StockListItem = ({
         ecoScore: number,
         climateFriendliness: ClimateFriendliness
     },
-    deleteStock = () => {}
+    deleteStock = () => {},
+    modifyStock = () => {}
 })  => {
 
     const BEST_ECO_SCORE = 10
@@ -128,7 +129,7 @@ const StockListItem = ({
                 /> 
             </Stack>
         </CardContent>
-        <OptionsButton deleteAction={deleteStock}></OptionsButton>
+        <OptionsButton deleteAction={deleteStock} editAction={modifyStock}></OptionsButton>
       </Stack>
     </Card>
     );

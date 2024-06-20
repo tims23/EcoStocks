@@ -16,13 +16,11 @@ const OptionsButton = ({editAction = () => {}, deleteAction = () => {}}) => {
         setAnchorEl(event.currentTarget);
     }   
 
-    const handleClose = (clickAction = () => {}) => {
-        clickAction();
+    const handleClose = () => {
         setAnchorEl(null);
     }
 
     return (
-        // Your JSX code goes here
         <div>
              <IconButton
         aria-label="more"
@@ -49,9 +47,12 @@ const OptionsButton = ({editAction = () => {}, deleteAction = () => {}}) => {
           },
         }}
       >
-        {OPTIONS.map((option) => (
-          <MenuItem key={option[0]} selected={option === 'Pyxis'} onClick={() => handleClose(option[1])}>
-            {option[0]}
+        {OPTIONS.map(([optionName, optionAction]) => (
+          <MenuItem key={optionName} selected={optionName === 'Pyxis'} onClick={() => {
+            handleClose()
+            optionAction()
+          }}>
+            {optionName}
           </MenuItem>
         ))}
       </Menu>

@@ -1,12 +1,18 @@
 "use client"
+import InputDialog from "@/views/InputDialog";
 import StockListItem, { ClimateFriendliness } from "@/views/StockListItem";
 import { Button, Typography } from "@material-ui/core";
 import { Add } from "@mui/icons-material";
-import { Stack } from "@mui/material";
+import { Autocomplete, Dialog, DialogTitle, Stack, TextField } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
-import { useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function Home() {
+// Home page
+export default function Home({params: {depotID}}) {   
+  const EDIT_PARAM = 'edit'
+
   //create example stock
   const exampleStock = {
     image: "https://api-ninjas-data.s3.us-west-2.amazonaws.com/logos/l476432a3e85a0aa21c23f5abd2975a89b6820d63.png",
@@ -34,11 +40,20 @@ export default function Home() {
 
   const exampleStocks = [exampleStock, exampleAmazonStock]
   
+  const router = useRouter()
+
+  // set state for stocks
   const [stocks, setstocks] = useState(exampleStocks)
 
+  // function to delete stock
   const deleteStock = (stock) => {
     console.log("delete stock")
     setstocks(stocks.filter(s => s !== stock))
+  }
+
+  const modifyStock = (stock) => {
+    console.log("modify stock")
+    router.push(`/${depotID}?${EDIT_PARAM}`, undefined, { shallow: true })
   }
 
   return (
@@ -55,12 +70,19 @@ export default function Home() {
           spacing={1}
         >
           <Stack direction={"row"} justifyContent={"center"}>
-          <Button color="primary">
-            <Add></Add>
-          </Button>
+          <Link href={`/${depotID}?${EDIT_PARAM}`} shallow={true}>
+            <Button color="primary">
+              <Add></Add>
+            </Button>
+          </Link>
           </Stack>
           {stocks.map((stock, index) => 
-            <StockListItem stock={stock} deleteStock={() => deleteStock(stock)} key={index}></StockListItem>
+            <StockListItem
+              modifyStock={() => modifyStock(stock)}
+              stock={stock} 
+              deleteStock={() => deleteStock(stock)} 
+              key={index}
+              />
           )}
         </Stack>
 
@@ -89,6 +111,7 @@ export default function Home() {
         height={200}
       />
       </Stack>
+      <InputDialog depotID={depotID}></InputDialog>
     </main>
   );
 }
