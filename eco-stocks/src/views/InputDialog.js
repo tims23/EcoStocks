@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Autocomplete, Card, CardContent, Dialog, DialogTitle, Stack, TextField } from "@mui/material";
-import { Button, Typography } from "@material-ui/core";
+import { Button, Typography, Autocomplete, Card, CardContent, Dialog, DialogTitle, Stack, TextField } from "@mui/material";
 import {useSearchParams, useRouter } from "next/navigation";
 
 const InputDialog = ({depotID}) => {

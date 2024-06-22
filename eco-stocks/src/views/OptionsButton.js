@@ -1,7 +1,7 @@
 import React from 'react';
-import { IconButton, Menu, MenuItem } from '@material-ui/core';
 import { useState } from 'react';
 import { MoreVert } from '@mui/icons-material';
+import { IconButton, Menu, MenuItem } from '@mui/material';
 
 const OptionsButton = ({editAction = () => {}, deleteAction = () => {}}) => {
     const ITEM_HEIGHT = 48;

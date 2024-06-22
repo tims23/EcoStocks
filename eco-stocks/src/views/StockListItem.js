@@ -1,8 +1,7 @@
 "use client"
 import * as React from "react";
-import { Card, CardContent, CardMedia, Grid, IconButton, Menu, MenuItem, Typography, useTheme } from "@material-ui/core";
 import { number, string } from "prop-types";
-import { Stack } from "@mui/material";
+import { Stack, Card, CardContent, CardMedia, Typography, useTheme  } from "@mui/material";
 import OptionsButton from "./OptionsButton";
 
 export const ClimateFriendliness = Object.freeze({

@@ -1,13 +1,12 @@
 "use client"
 import InputDialog from "@/views/InputDialog";
 import StockListItem, { ClimateFriendliness } from "@/views/StockListItem";
-import { Button, Typography } from "@material-ui/core";
 import { Add } from "@mui/icons-material";
-import { Autocomplete, Dialog, DialogTitle, Stack, TextField } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 // Home page
 export default function Home({params: {depotID}}) {   
