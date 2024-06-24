@@ -75,10 +75,9 @@ const loadingBackdrop = (
 const StockList = () => { 
   const stockItems = (
     stocks.map((stock, index) => (
-      <div>
+      <div key={stock.isin}>
         <StockListItem 
           loading={loading}
-          key={stock.isin}
           stock={stock} 
           deleteStock={() => fetchDeleteStock(stock)}
           modifyStock={() => modifyStock(stock)}
