@@ -1,19 +1,33 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace ESGScoreCore;
 
 public class Stock
 {
-    private String Ticker { get; set; }
-    private String Name { get; set; }
-    private Int16 Price { get; set; }
-    private short ESGScore { get; set; }
-    private Int16 NumberHeld { get; set; }
-    private Int16 TotalValue { get; set; }
-    private String Image { get; set; }
+   
+    public String Ticker { get; set; }
+    
+    public String Name { get; set; }
+    
+    public float Price { get; set; }
+    
+    public float ESGScore { get; set; }
+    
+    public Int16 NumberHeld { get; set; }
+    
+    public Int16 TotalValue { get; set; }
+    
+    public String Image { get; set; }
 
 
-    public  Stock(String ticker)
+    public  Stock(String ticker, short NumberHeld)
+    {
+        this.Ticker = ticker;
+        this.NumberHeld = NumberHeld;
+    }
+    public Stock(String ticker)
     {
         this.Ticker = ticker;
     }
@@ -45,11 +59,11 @@ public class Stock
     {
         return this.Name;
     }
-    public Int16 GetPrice()
+    public float GetPrice()
     {
         return this.Price;
     }
-    public Int16 GetESGScore()
+    public float GetESGScore()
     {
         return this.ESGScore;
     }
@@ -68,20 +82,21 @@ public class Stock
         var requestFinance = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri($"https://yahoo-finance127.p.rapidapi.com/esg-score/{Ticker}"),
+            RequestUri = new Uri($"https://yahoo-finance127.p.rapidapi.com/price/{Ticker}"),
             Headers =
             {
-                { "X-RapidAPI-Key", "2c0e585181msh2408993a65654bfp184d11jsnba98037211d3" },
-                { "X-RapidAPI-Host", "yahoo-finance127.p.rapidapi.com" },
+                { "x-rapidapi-key", "79fa5992e2mshd4416ba70da4b72p116227jsn39b691837dbe" },
+                { "x-rapidapi-host", "yahoo-finance127.p.rapidapi.com" },
             },
         };
         using (var responseFinance = await client.SendAsync(requestFinance))
         {
             responseFinance.EnsureSuccessStatusCode();
-            var body = await responseFinance.Content.ReadAsStringAsync();
-            var test = JsonNode.Parse(body);
-            Name = (String)test!["longName"]!;
-            Price = (Int16)test["regularMarketPrice"]!["raw"]!;
+            var bodyFinance = await responseFinance.Content.ReadAsStringAsync();
+            var parsedBodyFinance = JsonNode.Parse(bodyFinance);
+            Name = (String)parsedBodyFinance!["longName"]!;
+            Price = float.Parse(parsedBodyFinance!["regularMarketPrice"]!["raw"]!.ToString());
+         
         }
         ESGScore esg = new ESGScore(Ticker);
         var esgScore = await esg.GetEsgScore();
@@ -98,9 +113,9 @@ public class Stock
         using (var responseImage = await client.SendAsync(requestImage))
         {
             responseImage.EnsureSuccessStatusCode();
-            var body = await responseImage.Content.ReadAsStringAsync();
-            var test = JsonNode.Parse(body);
-            Image = (String)test!["image"]!;
+            var bodyImage = await responseImage.Content.ReadAsStringAsync();
+            var parsedBodyImage = JsonNode.Parse(bodyImage);
+            Image = parsedBodyImage![0]!["image"]!.ToString();
         }
         return this;
 }
