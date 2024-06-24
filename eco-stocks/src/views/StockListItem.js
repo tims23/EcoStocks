@@ -1,8 +1,9 @@
 "use client"
 import * as React from "react";
 import { number, string } from "prop-types";
-import { Stack, Card, CardContent, CardMedia, Typography, useTheme  } from "@mui/material";
+import { Stack, Card, CardContent, CardMedia, Typography, useTheme, ListItem, Grid, Skeleton  } from "@mui/material";
 import OptionsButton from "./OptionsButton";
+import ToggableSkeleton from "./ToggableSkeleton";
 
 export const ClimateFriendliness = Object.freeze({
     LOW:   Symbol("low"),
@@ -22,18 +23,13 @@ const StockListItem = ({
         ecoScore: number,
         climateFriendliness: ClimateFriendliness
     },
+    loading = false,
     deleteStock = () => {},
     modifyStock = () => {}
 })  => {
 
     const BEST_ECO_SCORE = 10
-    const ITEM_HEIGHT = 48;
-    
-    const options = [
-        'Edit',
-        'Delete',
-        'Duplicate'
-    ];
+    const ITEM_HEIGHT = 100;
 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -69,69 +65,70 @@ const StockListItem = ({
 
     const theme = useTheme();
 
-    return (
-<Card>
-    <Stack
-    direction="row"
-    justifyContent="center"
-    alignItems="center"
-    spacing={2}
-    >
-        <CardContent
-            style={{width: 150, height: 100, overflow: "hidden"}}
-            >
-            <CardMedia
-                component="img" 
-                style={{ objectFit:"contain", height: "100%"}}
-                image={stock.image}
-                alt={`Logo of ${stock.stockName}`}
-            />  
-        </CardContent>
-        <CardContent>
-          <Typography component="div" variant="h5">
-            {stock.stockName}
-          </Typography>
-          <Typography variant="subtitle2" color="text.secondary" component="div">
-            {stock.wkn}
-          </Typography>
-          <Typography variant="subtitle2" color="text.secondary" component="div">
-            {stock.isin}
-          </Typography>
-        </CardContent>
-        <CardContent>
-          <Typography component="div" variant="h5">
+return (
+    <ListItem sx={{height: ITEM_HEIGHT, overflow: "hidden"}}>
+        <Grid container spacing={1} alignItems={"center"}>
+            <Grid item xs={2} >
+                <ToggableSkeleton variant="rounded" loading={loading}>
+                    <img src={stock.image} style={{maxWidth: "90%", objectFit: "contain"}} alt={stock.stockName} className="stock-list-item__image" />
+                </ToggableSkeleton>
+            </Grid>
+            <Grid item xs={3}>
+                <ToggableSkeleton variant="text" loading={loading}>
+                <Typography variant="h6" color={"text.primary"}>
+                    {stock.stockName}
+                </Typography>
+                </ToggableSkeleton>
+                <ToggableSkeleton variant="text"loading={loading} >
+                <Typography variant="subtitle2" color="text.secondary">
+                    {stock.wkn}
+                </Typography>
+                </ToggableSkeleton>
+                <ToggableSkeleton variant="text" loading={loading}>
+                <Typography variant="subtitle2" color="text.secondary">
+                    {stock.isin}
+                </Typography>
+                </ToggableSkeleton>
+            </Grid>
+            <Grid item xs={3}>
+            <ToggableSkeleton variant="text" loading={loading}>
+            <Typography variant="h6" color="text.primary">
             {stock.price}
-          </Typography>
-          <Typography component="div" variant="subtitle2">
+            </Typography>
+            </ToggableSkeleton>
+            <ToggableSkeleton variant="text" loading={loading}>
+          <Typography  variant="subtitle2" color="text.secondary">
             {stock.shares} shares
           </Typography>
-          <Typography variant="subtitle2" color="text.secondary" component="div">
+          </ToggableSkeleton>
+          <ToggableSkeleton variant="text" loading={loading}>
+          <Typography variant="subtitle2" color="text.secondary">
             {stock.portfolioPercentage}
           </Typography>
-        </CardContent>
-        <CardContent>
-           <Stack
-                direction={"row"}
-                spacing={1}
-                >
-                <Typography component="div" variant="h5">
+            </ToggableSkeleton>
+            </Grid>
+            <Grid item xs={3}>
+            <ToggableSkeleton variant="text" loading={loading}>
+            <Typography color={"text.primary"} variant="h5">
                     {stock.ecoScore} / {BEST_ECO_SCORE}
                 </Typography>
-           
-           
-                <CardMedia
-                    item
-                    component="img"
-                    style={{ height: 40 , width: "fit-content", justifyContent: "center"}}
-                    image={getClimateFriendlinessImage(stock.climateFriendliness)}
-                    alt={getClimateFriendlinessText(stock.climateFriendliness)}
-                /> 
-            </Stack>
-        </CardContent>
-        <OptionsButton deleteAction={deleteStock} editAction={modifyStock}></OptionsButton>
-      </Stack>
-    </Card>
-    );
+                </ToggableSkeleton>
+                <ToggableSkeleton variant="rounded" loading={loading}>
+                <img 
+                src={getClimateFriendlinessImage(stock.climateFriendliness)}
+                alt={getClimateFriendlinessText(stock.climateFriendliness)}
+                style={{ height: 40 , width: "fit-content", justifyContent: "center"}}
+                ></img>
+                </ToggableSkeleton>
+            </Grid>
+            <Grid item xs={1}>
+                {loading ? <div/> : <OptionsButton deleteAction={deleteStock} editAction={modifyStock}/>}
+            </Grid>
+        </Grid>
+    </ListItem>
+);
+
+
 };
 
 // what icon could be good to express medium climate impact?

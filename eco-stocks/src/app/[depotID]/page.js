@@ -1,116 +1,160 @@
 "use client"
+import useAPIStocks from "@/hooks/useAPIStocks";
+import { EXAMPLE_STOCKS } from "@/services/mockData";
 import InputDialog from "@/views/InputDialog";
 import StockListItem, { ClimateFriendliness } from "@/views/StockListItem";
 import { Add } from "@mui/icons-material";
-import { Button, Stack } from "@mui/material";
+import { Alert, Backdrop, Button, CircularProgress, Divider, Grid, List, ListItem, ListItemText, ListSubheader, Skeleton, Snackbar, Stack } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Home page
 export default function Home({params: {depotID}}) {   
   const EDIT_PARAM = 'edit'
+  const SNACKBAR_DURATION = 6000
 
-  //create example stock
-  const exampleStock = {
-    image: "https://api-ninjas-data.s3.us-west-2.amazonaws.com/logos/l476432a3e85a0aa21c23f5abd2975a89b6820d63.png",
-    stockName: "Apple",
-    wkn: "WKN123456",
-    isin: "ISIN123456",
-    price: "123,45",
-    shares: 123,
-    portfolioPercentage: "12%",
-    ecoScore: 10,
-    climateFriendliness: ClimateFriendliness.HIGH
-  }
-
-  const exampleAmazonStock = {
-    image: "https://api-ninjas-data.s3.us-west-2.amazonaws.com/logos/l74c0fda1054b04bf3e2365d467e32a47e3feba7b.png",
-    stockName: "Amazon",
-    wkn: "WKN123456",
-    isin: "ISIN123456",
-    price: "123,45",
-    shares: 123,
-    portfolioPercentage: "12%",
-    ecoScore: 10,
-    climateFriendliness: ClimateFriendliness.LOW
-    }
-
-  const exampleStocks = [exampleStock, exampleAmazonStock]
-  
   const router = useRouter()
 
   // set state for stocks
-  const [stocks, setstocks] = useState(exampleStocks)
+  const {stocks, loading, error, fetchAddStock, fetchDeleteStock} = useAPIStocks(depotID)
 
-  // function to delete stock
-  const deleteStock = (stock) => {
-    console.log("delete stock")
-    setstocks(stocks.filter(s => s !== stock))
+  const modifyStock = (stock = "") => {
+    router.push(`/${depotID}?${EDIT_PARAM}=${stock.ticker}`, undefined, { shallow: true })
+  } 
+
+  const AddButton = () => {
+    return (
+      <Stack direction={"row"} justifyContent={"center"}>
+        <Link href={`/${depotID}?${EDIT_PARAM}`} shallow={true}>
+          <Button color="primary">
+            <Add></Add>
+          </Button>
+        </Link>
+      </Stack>
+    );
   }
 
-  const modifyStock = (stock) => {
-    console.log("modify stock")
-    router.push(`/${depotID}?${EDIT_PARAM}`, undefined, { shallow: true })
+  const ecoCharts = (
+    <PieChart
+    slotProps={{
+    pieArcLabel: {opacity: 0},
+    legend: { hidden: true},
+    }}
+    series={[
+    {
+      data: [
+        { id: 0, value: 10, label: 'Positive' },
+        { id: 1, value: 15, label: 'Neutral' },
+        { id: 2, value: 20, label: 'Negative' },
+      ],
+      arcLabel: (item) => item.label,
+      innerRadius: 30,
+      outerRadius: 100,
+      paddingAngle: 5,
+      cornerRadius: 5,
+      highlightScope: { faded: 'global', highlighted: 'item' },
+      faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+    },
+  ]}
+  width={400}
+  height={200}
+/>
+)
+
+const loadingBackdrop = (
+  <Backdrop
+    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    open={loading}
+  >
+    <CircularProgress color="inherit" />
+  </Backdrop>
+)
+
+const StockList = () => { 
+  const stockItems = (
+    stocks.map((stock, index) => (
+      <div>
+        <StockListItem 
+          loading={loading}
+          key={stock.isin}
+          stock={stock} 
+          deleteStock={() => fetchDeleteStock(stock)}
+          modifyStock={() => modifyStock(stock)}
+          />
+          {index < stocks.length - 1 ? <Divider/> : <div/>}
+        </div>
+      ))
+  )
+
+  return (
+    <List
+      sx={{
+        width: '100%',
+        position: 'relative',
+        overflow: 'auto',
+        maxHeight: 350,
+        '& ul': { padding: 0 },
+        bgcolor: 'background.paper'
+      }}
+      >
+        {stockItems}
+    </List>
+  );
+}
+
+  const ErrorAlert = () => {
+    const [open, setOpen] = useState(false);
+  
+    const handleClose = (_, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setOpen(false);
+    };
+
+    useEffect(() => {
+      if (error) {
+        setOpen(true);
+      }
+    }, [error])
+
+    return (
+    <div>
+      <Snackbar open={open} autoHideDuration={SNACKBAR_DURATION} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="error"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {error}
+        </Alert>
+      </Snackbar>
+  </div>
+    )
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Stack
-        width={"100%"}
-        height={"100%"}
-        direction={"row"}
-        spacing={2}
-        alignItems={"center"}
-      >
-        <Stack
-          direction={"column"}
-          spacing={1}
-        >
-          <Stack direction={"row"} justifyContent={"center"}>
-          <Link href={`/${depotID}?${EDIT_PARAM}`} shallow={true}>
-            <Button color="primary">
-              <Add></Add>
-            </Button>
-          </Link>
+    <main className="min-h-screen flex-col items-center justify-between p-24">
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={8}>
+          <Stack
+            direction="column"
+            spacing={1}
+            >
+            <AddButton/>
+            <StockList/>
           </Stack>
-          {stocks.map((stock, index) => 
-            <StockListItem
-              modifyStock={() => modifyStock(stock)}
-              stock={stock} 
-              deleteStock={() => deleteStock(stock)} 
-              key={index}
-              />
-          )}
-        </Stack>
-
-        <PieChart
-          slotProps={{
-          pieArcLabel: {opacity: 0},
-          legend: { hidden: true},
-          }}
-          series={[
-          {
-            data: [
-              { id: 0, value: 10, label: 'Positive' },
-              { id: 1, value: 15, label: 'Neutral' },
-              { id: 2, value: 20, label: 'Negative' },
-            ],
-            arcLabel: (item) => item.label,
-            innerRadius: 30,
-            outerRadius: 100,
-            paddingAngle: 5,
-            cornerRadius: 5,
-            highlightScope: { faded: 'global', highlighted: 'item' },
-            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
-          },
-        ]}
-        width={400}
-        height={200}
-      />
-      </Stack>
-      <InputDialog depotID={depotID}></InputDialog>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          {ecoCharts}
+        </Grid>
+      </Grid>
+      <ErrorAlert/>
+      <InputDialog depotID={depotID} addStock={fetchAddStock}></InputDialog>
     </main>
   );
 }
