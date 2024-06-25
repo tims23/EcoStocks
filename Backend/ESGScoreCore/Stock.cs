@@ -47,9 +47,9 @@ public class Stock
     {
         this.NumberHeld = numberHeld;
     }
-    public void SetTotalValue(Int16 totalValue)
+    public void SetTotalValue()
     {
-        this.TotalValue = totalValue;
+        TotalValue = (Int16)(Price * NumberHeld);
     }
     public String GetTicker()
     {
@@ -85,7 +85,7 @@ public class Stock
             RequestUri = new Uri($"https://yahoo-finance127.p.rapidapi.com/price/{Ticker}"),
             Headers =
             {
-                { "x-rapidapi-key", "79fa5992e2mshd4416ba70da4b72p116227jsn39b691837dbe" },
+                { "x-rapidapi-key", "e704315ddamshb145bee15c22b6ap134854jsn89ea3b3ba27b" },
                 { "x-rapidapi-host", "yahoo-finance127.p.rapidapi.com" },
             },
         };
@@ -96,7 +96,7 @@ public class Stock
             var parsedBodyFinance = JsonNode.Parse(bodyFinance);
             Name = (String)parsedBodyFinance!["longName"]!;
             Price = float.Parse(parsedBodyFinance!["regularMarketPrice"]!["raw"]!.ToString());
-         
+            TotalValue = (Int16)(Price * NumberHeld);
         }
         ESGScore esg = new ESGScore(Ticker);
         var esgScore = await esg.GetEsgScore();

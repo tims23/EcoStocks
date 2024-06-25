@@ -50,7 +50,10 @@ namespace ESGScoreCore.Controllers
             {
                 if (Cache.TryGetValue(Ticker, out Stock CacheStock))
                 {
+                    CacheStock.SetNumberHeld(NumberHeld);
+                    CacheStock.SetTotalValue();
                     String CacheJson = JsonSerializer.Serialize<Stock>(CacheStock);
+                    
                     portfolio.AddStock(CacheStock);
                     return Ok(CacheJson); 
                 }
@@ -66,7 +69,9 @@ namespace ESGScoreCore.Controllers
             else
             {
                 if (Cache.TryGetValue(Ticker, out Stock CacheStock))                      
-                {                                                                         
+                {                                                          
+                    CacheStock.SetNumberHeld(NumberHeld);
+                    CacheStock.SetTotalValue();
                     String CacheJson = JsonSerializer.Serialize<Stock>(CacheStock);    
                     portfolio = new Portfolio();                                    
                     portfolio.AddStock(CacheStock);                                      

@@ -22,7 +22,7 @@ public class ESGScore
             RequestUri = new Uri($"https://yahoo-finance127.p.rapidapi.com/esg-score/{Ticker}"),
             Headers =
             {
-                { "x-rapidapi-key", "79fa5992e2mshd4416ba70da4b72p116227jsn39b691837dbe" },
+                { "x-rapidapi-key", "e704315ddamshb145bee15c22b6ap134854jsn89ea3b3ba27b" },
                 { "x-rapidapi-host", "yahoo-finance127.p.rapidapi.com" },
             },
         };

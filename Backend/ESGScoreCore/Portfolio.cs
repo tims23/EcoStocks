@@ -29,4 +29,8 @@ public class Portfolio
         }
         return totalValue;
     }
+    public ConcurrentDictionary<string, Stock> GetPortfolio()
+    {
+        return PortfolioStocks;
+    }
 }

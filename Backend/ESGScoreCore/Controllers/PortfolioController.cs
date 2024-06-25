@@ -1,5 +1,8 @@
 ﻿using System.Collections.Concurrent;
+using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 
 namespace ESGScoreCore.Controllers;
 
@@ -8,13 +11,13 @@ namespace ESGScoreCore.Controllers;
 [Route("api/Portfolio")]                                               
 public class PortfolioController : ControllerBase                      
 {                                        
-    public static Portfolio portfolio = new();                                          
+                                             
     public static ConcurrentDictionary<string, Portfolio?> savedPortfolios = new();       
                                                                        
     [HttpDelete("{Hash}")]                                             
     public OkResult Delete(string Hash, [FromQuery(Name = "Ticker")] string ticker)      
     {                                                                  
-        Stock stock = new Stock(ticker);                               
+        savedPortfolios.TryGetValue(Hash, out Portfolio? portfolio);
         portfolio.RemoveStock(ticker);                                 
         return Ok();                                                   
     }                                                                  
@@ -43,8 +46,15 @@ public class PortfolioController : ControllerBase
     {                                                                  
         //Query Database and return portfolio if present               
         if (savedPortfolios.TryGetValue(Hash, out Portfolio portfolio))
-        {                                                              
-            return Ok(portfolio);                                      
+        {      
+           var value = portfolio.GetPortfolio();
+           StringBuilder sb = new StringBuilder();
+           foreach (KeyValuePair<string, Stock> stock in value)
+           {
+               sb.Append(JsonSerializer.Serialize(stock.Value));
+           }
+           Console.WriteLine(sb);
+            return Ok(sb.ToString());                                      
         }                                                              
         //If not present return not found and create new portfolio     
         else                                                           
