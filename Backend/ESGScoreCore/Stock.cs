@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ESGScoreCore;
 
@@ -85,8 +86,9 @@ public class Stock
         return this.TotalValue;
     }
 
-    public async Task<Stock> getStockInfo()
+    public async Task<Stock?> getStockInfo()
     {
+        
         var client = new HttpClient();
         var requestFinance = new HttpRequestMessage
         {
@@ -108,14 +110,19 @@ public class Stock
             TotalValue = (Int16)(Price * NumberHeld);
         }
         ESGScore esg = new ESGScore(Ticker);
-        var esgScore = await esg.GetEsgScore();
+        float esgScore;
+        esgScore = await esg.GetEsgScore();
+        if (esgScore == 0)
+        {
+            return null;
+        }
         this.ESGScore = esgScore;
         switch (esgScore)
         {
-            case < 30:
+            case < 20:
                 ClimateFriendliness = ClimateFriendlinessEnum.High.ToString();
                 break;
-            case < 60:
+            case < 40:
                 ClimateFriendliness = ClimateFriendlinessEnum.Medium.ToString();
                 break;
             default:

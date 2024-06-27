@@ -31,6 +31,13 @@ public class ESGScore
             response.EnsureSuccessStatusCode();
             var bodyESG = await response.Content.ReadAsStringAsync();
             var parsedbodyESG = JsonNode.Parse(bodyESG);
+            if (parsedbodyESG["message"] != null)
+            {
+                return 0;
+            }
+            {
+                
+            }
             return  float.Parse(parsedbodyESG["totalEsg"]["raw"].ToString());
         }
     }

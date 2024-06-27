@@ -33,7 +33,9 @@ public class PortfolioController : ControllerBase
                 savedPortfolios.TryGetValue(Hash, out Portfolio? portfolio);
                 portfolio.SetTotalValue();     
                 portfolio.SetPercentages();
-                return Ok(JsonSerializer.Serialize(portfolio));                                      
+                portfolio.SetClimatePercentages();
+                return Ok(JsonSerializer.Serialize(portfolio));     
+                
             }                                                          
             catch (Exception e)                                        
             {                                                          
@@ -49,8 +51,8 @@ public class PortfolioController : ControllerBase
         if (savedPortfolios.TryGetValue(Hash, out Portfolio portfolio))
         {      
            var value = portfolio.GetPortfolio();
-           HashSet<Stock> stocks = new HashSet<Stock>();
-           foreach (KeyValuePair<string, Stock> stock in value)
+           HashSet<Stock?> stocks = new HashSet<Stock?>();
+           foreach (KeyValuePair<string, Stock?> stock in value)
            {
                stocks.Add(stock.Value);
            }
