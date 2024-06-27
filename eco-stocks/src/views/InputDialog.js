@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Typography, Autocomplete, Card, CardContent, Dialog, DialogTitle, Stack, TextField, Grid, Divider } from "@mui/material";
 import {useSearchParams, useRouter } from "next/navigation";
+import { useStockSuggestions } from '@/hooks/useStockSuggestions';
 
 const InputDialog = ({
     depotID,
@@ -14,17 +15,11 @@ const InputDialog = ({
     const searchParams = useSearchParams()
     const shouldEdit = searchParams.has(EDIT_PARAM)
     const stockId = searchParams.get(EDIT_PARAM)
-
+    
     const [tickerValue, settickerValue] = useState(stockId || "") 
     const [amountValue, setAmountValue] = useState()
-    const [tickerSuggestions, settickerSuggestions] = useState([])
-    const updateTickerAutoSuggestions =  (ticker) => {
-      if (ticker.length < LETTERS_FOR_SUGGESTIONS) {
-        settickerSuggestions([])
-      } else {
-        settickerSuggestions(["AAPL", "AMZN"])
-      }
-    }
+
+    const tickerSuggestions = useStockSuggestions(tickerValue)
 
     const closeDialog = () => {
         settickerValue("")
@@ -33,20 +28,15 @@ const InputDialog = ({
     }
 
     const saveData = () => {
-        addStock()
+        addStock(tickerValue, amountValue)
         closeDialog()
     }
 
     useEffect(() => {
-        console.log("stockId", stockId)
         if (stockId) {
             settickerValue(stockId)
         }
     }, [stockId])
-
-    useEffect(() => {
-        console.log("amountValue", amountValue)
-    } , [amountValue])
 
     const isInt = (value) => {
         if (isNaN(value)) {
@@ -73,8 +63,8 @@ const InputDialog = ({
                     <Grid item xs={8}>
                         <div>
                         <Autocomplete
-                        onInputChange={(_, newIputVal)=>updateTickerAutoSuggestions(newIputVal)}
                         freeSolo
+                        onInputChange={(_, value) => { settickerValue(value) }}
                         sx={{ maxWidth: 228}}
                         options={tickerSuggestions}
                         value={tickerValue}

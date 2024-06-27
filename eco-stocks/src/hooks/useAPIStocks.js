@@ -1,5 +1,6 @@
 'use client'
 import { addStock } from "@/services/addStock";
+import { deleteStock } from "@/services/deleteStocks";
 import { getStocks } from "@/services/getStocks";
 import { EXAMPLE_STOCKS } from "@/services/mockData";
 import { useState, useEffect } from "react";
@@ -10,33 +11,39 @@ const useAPIStocks = (depotID) => {
     const [error, setError] = useState(null)
 
     const fetchStocks = () => {
+        setError(null)
         getStocks(depotID)
         .then((data) => {
             setStocks([...data])
             setLoading(false)
         })
         .catch((error) => {
-            setError(error)
+            setError(error.toString())
+            setStocks([])
             setLoading(false)
         })
     }
 
-    const fetchAddStock = (stock) => {
+    const fetchAddStock = (ticker, amount) => {
+        setError(null)
         setLoading(true)
-        addStock(depotID, stock)
+        addStock(depotID, ticker, amount)
         .then((data) => {
+            console.log("RES", data)
             setStocks([...stocks, data])
             setLoading(false)
         })
         .catch((error) => {
-            setError(error)
+            console.log("ERR", error)
+            setError(error.toString())
             setLoading(false)
         })
     }
 
     const fetchDeleteStock = (stock) => {
+        setError(null)
         setLoading(true)
-        addStock(depotID, stock)
+        deleteStock(depotID, stock)
         .then((data) => {
             setStocks(stocks.filter(s => s !== stock))
             setLoading(false)
@@ -54,4 +61,4 @@ const useAPIStocks = (depotID) => {
     return {stocks, loading, error, fetchAddStock, fetchDeleteStock}
 }
 
-export default useAPIStocks
+export default useAPIStocks;

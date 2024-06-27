@@ -4,31 +4,15 @@ import { number, string } from "prop-types";
 import { Stack, Card, CardContent, CardMedia, Typography, useTheme, ListItem, Grid, Skeleton  } from "@mui/material";
 import OptionsButton from "./OptionsButton";
 import ToggableSkeleton from "./ToggableSkeleton";
-
-export const ClimateFriendliness = Object.freeze({
-    LOW:   Symbol("low"),
-    MEDIUM:  Symbol("medium"),
-    HIGH: Symbol("high")
-});
+import { ClimateFriendliness, Stock } from "@/data/Stock";
 
 const StockListItem = ({
-    stock = {
-        image: Image,
-        stockName: string,
-        wkn: string,
-        isin: string,
-        price: number,
-        shares: number,
-        portfolioPercentage: number,
-        ecoScore: number,
-        climateFriendliness: ClimateFriendliness
-    },
+    stock = new Stock(),
     loading = false,
     deleteStock = () => {},
     modifyStock = () => {}
 })  => {
-
-    const BEST_ECO_SCORE = 10
+    const BEST_ECO_SCORE = 100
     const ITEM_HEIGHT = 100;
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -103,7 +87,7 @@ return (
           </ToggableSkeleton>
           <ToggableSkeleton variant="text" loading={loading}>
           <Typography variant="subtitle2" color="text.secondary">
-            {stock.portfolioPercentage}
+            {stock.totalValue}
           </Typography>
             </ToggableSkeleton>
             </Grid>

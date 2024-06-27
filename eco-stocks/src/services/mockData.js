@@ -1,4 +1,4 @@
-import { ClimateFriendliness } from "@/views/StockListItem"
+import { ClimateFriendliness } from "@/data/Stock"
 
 //create example stock
 export const EXAMPLE_APPLE_STOCK = {
@@ -11,6 +11,7 @@ export const EXAMPLE_APPLE_STOCK = {
     portfolioPercentage: "12%",
     ecoScore: 10,
     ticker: "AAPL",
+    totalValue: 10,
     climateFriendliness: ClimateFriendliness.HIGH
   }
 
@@ -24,6 +25,7 @@ export const EXAMPLE_AMAZON_STOCK = {
     portfolioPercentage: "12%",
     ecoScore: 10,
     ticker: "AMZN",
+    totalValue: 10,
     climateFriendliness: ClimateFriendliness.LOW
     }
 

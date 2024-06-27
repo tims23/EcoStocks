@@ -1,8 +1,12 @@
-import { EXAMPLE_APPLE_STOCK } from "./mockData";
+import { Stock } from "@/data/Stock";
 
-export async function addStock(depotID, stock) {
-    await new Promise(r => setTimeout(r, 2000));
-    return await fetch('https://jsonplaceholder.typicode.com/todos/1')
-    .then(response => response.json())
-    .then(json => EXAMPLE_APPLE_STOCK)
+export async function addStock(depotID, ticker, amount) {
+  return await fetch(`/api/${depotID}?ticker=${ticker}&amount=${amount}`, {method: "POST"})
+  .then((response) => {
+      if (response.ok) {
+          return response.json()
+      } 
+      throw new Error(response.statusText)
+  })
+  .then((json) => Stock.constructFromInternalJSON(json))
 } 

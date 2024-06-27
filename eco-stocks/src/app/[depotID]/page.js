@@ -1,5 +1,5 @@
 "use client"
-import useAPIStocks from "@/hooks/useAPIStocks";
+
 import { EXAMPLE_STOCKS } from "@/services/mockData";
 import InputDialog from "@/views/InputDialog";
 import StockListItem, { ClimateFriendliness } from "@/views/StockListItem";
@@ -9,6 +9,7 @@ import { PieChart } from "@mui/x-charts";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import useAPIStocks from "../../hooks/useAPIStocks";
 
 // Home page
 export default function Home({params: {depotID}}) {   
@@ -26,13 +27,11 @@ export default function Home({params: {depotID}}) {
 
   const AddButton = () => {
     return (
-      <Stack direction={"row"} justifyContent={"center"}>
         <Link href={`/${depotID}?${EDIT_PARAM}`} shallow={true}>
           <Button color="primary">
             <Add></Add>
           </Button>
         </Link>
-      </Stack>
     );
   }
 
@@ -87,6 +86,16 @@ const StockList = () => {
       ))
   )
 
+  const noItems = (
+      <Alert sx={{width:"100%"}} variant="filled" severity="info" action={
+        loading ? <CircularProgress sx={{color: "white"}} size={20} /> : <div/>
+      } >No stocks in depot</Alert>
+  )
+
+  if (stocks.length === 0) {
+    return noItems
+  }
+
   return (
     <List
       sx={{
@@ -138,18 +147,25 @@ const StockList = () => {
 
   return (
     <main className="min-h-screen flex-col items-center justify-between p-24">
-      <Grid container spacing={2}>
+      <Grid container spacing={2} alignItems={"stretch"}>
         <Grid item xs={12} sm={8}>
           <Stack
             direction="column"
             spacing={1}
             >
-            <AddButton/>
+            <Stack direction={"row"} justifyContent={"center"}>
+              <AddButton/>
+            </Stack>
             <StockList/>
           </Stack>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={4} >
+          <div style={{height: "100%"}}>
+          <Stack direction={"column"} sx={{height: "100%"}} justifyContent={"center"}>
+            
           {ecoCharts}
+          </Stack>
+          </div>
         </Grid>
       </Grid>
       <ErrorAlert/>
