@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ESGScoreCore.Controllers
 {
     [ApiController]
-    [Route("api/StockInfo")]
+    [Route("v1/api/StockInfo")]
     [Produces("application/json")]
     public class StockInfoController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace ESGScoreCore.Controllers
         {
             _logger = logger;
         }
-
+        
         [HttpGet("{Ticker}")]
         public async Task<IActionResult> Get(string Ticker)
         {
@@ -52,17 +52,22 @@ namespace ESGScoreCore.Controllers
                 {
                     CacheStock.SetNumberHeld(NumberHeld);
                     CacheStock.SetTotalValue();
-                    String CacheJson = JsonSerializer.Serialize<Stock>(CacheStock);
-                    
                     portfolio.AddStock(CacheStock);
+                    portfolio.SetTotalValue();
+                    portfolio.SetPercentages();
+                    String CacheJson = JsonSerializer.Serialize<Stock>(CacheStock);
+
                     return Ok(CacheJson); 
                 }
                 else
                 {
                     Stock stock = new Stock(Ticker,NumberHeld);                      
                     stock = await stock.getStockInfo();                              
-                    portfolio.AddStock(stock);                                       
-                    String stockJson = JsonSerializer.Serialize<Stock>(stock);       
+                    portfolio.AddStock(stock);     
+                    portfolio.SetTotalValue();
+                    portfolio.SetPercentages();
+                    String stockJson = JsonSerializer.Serialize<Stock>(stock);    
+                    Cache[Ticker] = stock;
                     return Ok(stockJson);                                            
                 }
             }
@@ -72,6 +77,7 @@ namespace ESGScoreCore.Controllers
                 {                                                          
                     CacheStock.SetNumberHeld(NumberHeld);
                     CacheStock.SetTotalValue();
+                    CacheStock.PercentageOfPortfolio = 1;
                     String CacheJson = JsonSerializer.Serialize<Stock>(CacheStock);    
                     portfolio = new Portfolio();                                    
                     portfolio.AddStock(CacheStock);                                      
@@ -82,10 +88,12 @@ namespace ESGScoreCore.Controllers
                 {
                     Stock stock = new Stock(Ticker, NumberHeld);
                     stock = await stock.getStockInfo();
+                    stock.PercentageOfPortfolio = 1;
                     portfolio = new Portfolio();
                     portfolio.AddStock(stock);
                     PortfolioController.savedPortfolios[PortfolioHash] = portfolio;
                     String stockJson = JsonSerializer.Serialize<Stock>(stock);
+                    Cache[Ticker] = stock;
                     return Ok(stockJson);
                 }
             }

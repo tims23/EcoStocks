@@ -2,7 +2,7 @@
 
 namespace ESGScoreCore.Controllers;
 [ApiController]
-[Route("api/Search")]
+[Route("v1/api/Search")]
 public class SearchController : ControllerBase
 {
     [HttpGet("{Ticker}")]
@@ -12,7 +12,7 @@ public class SearchController : ControllerBase
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri("https://yahoo-finance127.p.rapidapi.com/search/aa"),
+            RequestUri = new Uri($"https://yahoo-finance127.p.rapidapi.com/search/{Ticker}"),
             Headers =
             {
                 { "x-rapidapi-key", "e704315ddamshb145bee15c22b6ap134854jsn89ea3b3ba27b" },

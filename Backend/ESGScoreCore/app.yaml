@@ -11,6 +11,22 @@ runtime_config:
 manual_scaling:
   instances: 1
 resources:
-  cpu: 1
-  memory_gb: 0.5
+  cpu: 2
+  memory_gb: 2
   disk_size_gb: 10
+endpoints_api_service:
+  name: elite-impact-427220-q3.appspot.com
+  rollout_strategy: managed
+liveness_check:
+  path: "/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+readiness_check:
+  path: "/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2

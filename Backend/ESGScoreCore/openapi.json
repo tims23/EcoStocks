@@ -1,190 +1,195 @@
-﻿{
-  "swagger": "2.0",
-  "info": {
-    "title": "openapi",
-    "version": "v1"
-  },
-    "host": "290710900248.appspot.com",
+{
+ 
+    "swagger": "2.0",
+    "info": {
+      "title": "EcoStocks API",
+      "version": "v1"
+    },
+    "host": "elite-impact-427220-q3.appspot.com",
+    "x-google-endpoints": [
+      {
+        "name": "elite-impact-427220-q3.appspot.com",
+        "allowCors": true
+      }
+    ],
     "basePath": "/v1",
-  
-  "paths": {
-    "/api/Portfolio/{Hash}": {
-      
-      "delete": {
-        "operationId": "DeleteStockFromPortfolio",
-        "tags": [
-          "Portfolio"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "Hash",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "query",
-            "name": "Ticker",
-            "type": "string",
-            "collectionFormat": "multi"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
+    "paths": {
+      "/api/Portfolio/{Hash}": {
+        "delete": {
+          "operationId": "DeleteStockFromPortfolio",
+          "tags": [
+            "Portfolio"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "Hash",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "in": "query",
+              "name": "Ticker",
+              "type": "string",
+              "collectionFormat": "multi"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
           }
         }
-      }
-    },
-    "/api/Portfolio/Total": {
-      "get": {
-        "operationId": "GetTotalPortfolioValue",
-        "tags": [
-          "Portfolio"
-        ],
-        "produces": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "Hash",
-            "type": "string",
-            "collectionFormat": "multi"
+      },
+      "/api/Portfolio/Total": {
+        "get": {
+          "operationId": "GetTotalPortfolioValue",
+          "tags": [
+            "Portfolio"
+          ],
+          "produces": [
+            "text/plain",
+            "application/json",
+            "text/json"
+          ],
+          "parameters": [
+            {
+              "in": "query",
+              "name": "Hash",
+              "type": "string",
+              "collectionFormat": "multi"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            },
+            "404": {
+              "description": "Not Found",
+              "schema": {
+              }
+            }
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
+        }
+      },
+      "/api/Portfolio": {
+        "get": {
+          "operationId": "GetPortfolio",
+          "tags": [
+            "Portfolio"
+          ],
+          "parameters": [
+            {
+              "in": "query",
+              "name": "Hash",
+              "type": "string",
+              "collectionFormat": "multi"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      },
+      "/api/Search/{Ticker}": {
+        "get": {
+          "operationId": "SearchStocks",
+          "tags": [
+            "Search"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "Ticker",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      },
+      "/api/StockInfo/{Ticker}": {
+        "get": {
+          "operationId": "GetStockInfo",
+          "tags": [
+            "StockInfo"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "Ticker",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        },
+        "post": {
+          "operationId": "AddStockToPortfolio",
+          "tags": [
+            "StockInfo"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "Ticker",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "in": "query",
+              "name": "PortfolioHash",
+              "type": "string",
+              "collectionFormat": "multi"
+            },
+            {
+              "in": "query",
+              "name": "Number",
+              "type": "integer",
+              "format": "int32",
+              "collectionFormat": "multi"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
             }
           }
         }
       }
     },
-    "/api/Portfolio": {
-      "get": {
-        "operationId": "GetPortfolio",
-        "tags": [
-          "Portfolio"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "Hash",
-            "type": "string",
-            "collectionFormat": "multi"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Search/{Ticker}": {
-      "get": {
-        "operationId": "SearchStocks",
-        "tags": [
-          "Search"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "Ticker",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/StockInfo/{Ticker}": {
-      "get": {
-        "operationId": "GetStockInfo",
-        "tags": [
-          "StockInfo"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "Ticker",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "post": {
-        "operationId": "AddStockToPortfolio",
-        "tags": [
-          "StockInfo"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "Ticker",
-            "required": true,
+    "definitions": {
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
             "type": "string"
           },
-          {
-            "in": "query",
-            "name": "PortfolioHash",
-            "type": "string",
-            "collectionFormat": "multi"
+          "title": {
+            "type": "string"
           },
-          {
-            "in": "query",
-            "name": "Number",
-            "type": "integer",
+          "status": {
             "format": "int32",
-            "collectionFormat": "multi"
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
+        },
+        "additionalProperties": {}
       }
-    }
-  },
-  "definitions": {
-    "ProblemDetails": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "status": {
-          "format": "int32",
-          "type": "integer"
-        },
-        "detail": {
-          "type": "string"
-        },
-        "instance": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": { }
     }
   }
-}

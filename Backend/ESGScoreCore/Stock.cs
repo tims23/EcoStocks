@@ -20,6 +20,15 @@ public class Stock
     public Int16 TotalValue { get; set; }
     
     public String Image { get; set; }
+    public String ClimateFriendliness { get; set; }
+    public float PercentageOfPortfolio { get; set; }
+    
+    private enum ClimateFriendlinessEnum
+    {
+        High,
+        Medium,
+        Low,
+    }
 
 
     public  Stock(String ticker, short NumberHeld)
@@ -101,6 +110,18 @@ public class Stock
         ESGScore esg = new ESGScore(Ticker);
         var esgScore = await esg.GetEsgScore();
         this.ESGScore = esgScore;
+        switch (esgScore)
+        {
+            case < 30:
+                ClimateFriendliness = ClimateFriendlinessEnum.High.ToString();
+                break;
+            case < 60:
+                ClimateFriendliness = ClimateFriendlinessEnum.Medium.ToString();
+                break;
+            default:
+                ClimateFriendliness = ClimateFriendlinessEnum.Low.ToString();
+                break;
+        }
         var requestImage = new HttpRequestMessage
         {
             Method = HttpMethod.Get,

@@ -8,7 +8,7 @@ namespace ESGScoreCore.Controllers;
 
 
 [ApiController]                                                        
-[Route("api/Portfolio")]                                               
+[Route("v1/api/Portfolio")]                                               
 public class PortfolioController : ControllerBase                      
 {                                        
                                              
@@ -31,8 +31,9 @@ public class PortfolioController : ControllerBase
             try                                                        
             { 
                 savedPortfolios.TryGetValue(Hash, out Portfolio? portfolio);
-                var value = portfolio.GetTotalValue();                 
-                return Ok(value);                                      
+                portfolio.SetTotalValue();     
+                portfolio.SetPercentages();
+                return Ok(JsonSerializer.Serialize(portfolio));                                      
             }                                                          
             catch (Exception e)                                        
             {                                                          
@@ -48,13 +49,12 @@ public class PortfolioController : ControllerBase
         if (savedPortfolios.TryGetValue(Hash, out Portfolio portfolio))
         {      
            var value = portfolio.GetPortfolio();
-           StringBuilder sb = new StringBuilder();
+           HashSet<Stock> stocks = new HashSet<Stock>();
            foreach (KeyValuePair<string, Stock> stock in value)
            {
-               sb.Append(JsonSerializer.Serialize(stock.Value));
+               stocks.Add(stock.Value);
            }
-           Console.WriteLine(sb);
-            return Ok(sb.ToString());                                      
+           return Ok(JsonSerializer.Serialize(stocks));                                      
         }                                                              
         //If not present return not found and create new portfolio     
         else                                                           
