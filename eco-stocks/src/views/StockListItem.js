@@ -1,7 +1,6 @@
 "use client"
 import * as React from "react";
-import { number, string } from "prop-types";
-import { Stack, Card, CardContent, CardMedia, Typography, useTheme, ListItem, Grid, Skeleton  } from "@mui/material";
+import { Typography, useTheme, ListItem, Grid } from "@mui/material";
 import OptionsButton from "./OptionsButton";
 import ToggableSkeleton from "./ToggableSkeleton";
 import { ClimateFriendliness, Stock } from "@/data/Stock";
@@ -87,7 +86,7 @@ return (
           </ToggableSkeleton>
           <ToggableSkeleton variant="text" loading={loading}>
           <Typography variant="subtitle2" color="text.secondary">
-            {stock.totalValue}
+            {stock.totalValue} ({stock.portfolioPercentage})
           </Typography>
             </ToggableSkeleton>
             </Grid>

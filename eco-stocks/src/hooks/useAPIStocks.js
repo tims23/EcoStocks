@@ -44,7 +44,7 @@ const useAPIStocks = (depotID) => {
         setError(null)
         setLoading(true)
         deleteStock(depotID, stock)
-        .then((data) => {
+        .then(() => {
             setStocks(stocks.filter(s => s !== stock))
             setLoading(false)
         })

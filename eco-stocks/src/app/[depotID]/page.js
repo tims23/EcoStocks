@@ -4,12 +4,14 @@ import { EXAMPLE_STOCKS } from "@/services/mockData";
 import InputDialog from "@/views/InputDialog";
 import StockListItem, { ClimateFriendliness } from "@/views/StockListItem";
 import { Add } from "@mui/icons-material";
-import { Alert, Backdrop, Button, CircularProgress, Divider, Grid, List, ListItem, ListItemText, ListSubheader, Skeleton, Snackbar, Stack } from "@mui/material";
+import { Alert, Backdrop, Button, CircularProgress, Divider, Grid, List, ListItem, ListItemText, ListSubheader, Skeleton, Snackbar, Stack, Typography } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useAPIStocks from "../../hooks/useAPIStocks";
+import usePortfolioStats from "@/hooks/usePortfolioStats";
+import ToggableSkeleton from "@/views/ToggableSkeleton";
 
 // Home page
 export default function Home({params: {depotID}}) {   
@@ -20,6 +22,7 @@ export default function Home({params: {depotID}}) {
 
   // set state for stocks
   const {stocks, loading, error, fetchAddStock, fetchDeleteStock} = useAPIStocks(depotID)
+  const {portfoliostats, portfolioloading} = usePortfolioStats(depotID)
 
   const modifyStock = (stock = "") => {
     router.push(`/${depotID}?${EDIT_PARAM}=${stock.ticker}`, undefined, { shallow: true })
@@ -44,9 +47,9 @@ export default function Home({params: {depotID}}) {
     series={[
     {
       data: [
-        { id: 0, value: 10, label: 'Positive' },
-        { id: 1, value: 15, label: 'Neutral' },
-        { id: 2, value: 20, label: 'Negative' },
+        { id: 0, value: portfoliostats ? portfoliostats.ecoPercentages.High : 0, label: 'Positive' },
+        { id: 1, value: portfoliostats ? portfoliostats.ecoPercentages.Medium : 0, label: 'Neutral' },
+        { id: 2, value: portfoliostats ? portfoliostats.ecoPercentages.Low : 0, label: 'Negative' },
       ],
       arcLabel: (item) => item.label,
       innerRadius: 30,
@@ -74,7 +77,7 @@ const loadingBackdrop = (
 const StockList = () => { 
   const stockItems = (
     stocks.map((stock, index) => (
-      <div key={stock.isin}>
+      <div key={stock.ticker}>
         <StockListItem 
           loading={loading}
           stock={stock} 
@@ -161,9 +164,15 @@ const StockList = () => {
         </Grid>
         <Grid item xs={12} sm={4} >
           <div style={{height: "100%"}}>
-          <Stack direction={"column"} sx={{height: "100%"}} justifyContent={"center"}>
-            
-          {ecoCharts}
+          <Stack direction={"column"} sx={{height: "100%"}} justifyContent={"center"} spacing={3}>
+            <ToggableSkeleton loading={portfolioloading} >
+            <Typography variant="h3" color={"HighlightText"} textAlign={"center"}>
+              {portfoliostats ? portfoliostats.totalValue : "-"} € total Value
+              </Typography>
+            </ToggableSkeleton>
+            <ToggableSkeleton loading={portfolioloading} variant="circular">
+            {portfoliostats ? ecoCharts: null}
+          </ToggableSkeleton>
           </Stack>
           </div>
         </Grid>
