@@ -27,7 +27,7 @@ public class Portfolio
         Int16 totalValue = 0;
         foreach (KeyValuePair<string, Stock?> stock in PortfolioStocks)
         {
-            totalValue += stock.Value.GetTotalValue();
+            if (stock.Value != null) totalValue += stock.Value.GetTotalValue();
         }
         TotalValue = totalValue;
     }
@@ -64,9 +64,14 @@ public class Portfolio
             }
         }
         var total = totalHigh + totalMedium + totalLow;
-        Percentages["High"] = (float)totalHigh / total;
-        Percentages["Medium"] = (float)totalMedium / total;
-        Percentages["Low"] = (float)totalLow / total;
+        if (total == 0)
+        {
+            return;
+        }
+        Percentages["High"] = (float)totalHigh / total * 100;
+        Percentages["Medium"] = (float)totalMedium / total * 100;
+        Percentages["Low"] = (float)totalLow / total * 100;
+        // Console.WriteLine(Percentages["High"]);
     }
     public ConcurrentDictionary<string, Stock?> GetPortfolio()
     {

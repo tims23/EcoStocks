@@ -33,7 +33,7 @@ public class ESGScore
             var parsedbodyESG = JsonNode.Parse(bodyESG);
             if (parsedbodyESG["message"] != null)
             {
-                return 0;
+                return -1;
             }
             {
                 

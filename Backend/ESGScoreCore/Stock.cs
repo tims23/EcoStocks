@@ -29,6 +29,7 @@ public class Stock
         High,
         Medium,
         Low,
+        Undefined
     }
 
 
@@ -112,13 +113,12 @@ public class Stock
         ESGScore esg = new ESGScore(Ticker);
         float esgScore;
         esgScore = await esg.GetEsgScore();
-        if (esgScore == 0)
-        {
-            return null;
-        }
         this.ESGScore = esgScore;
         switch (esgScore)
         {
+            case -1:
+                ClimateFriendliness = ClimateFriendlinessEnum.Undefined.ToString();
+                break;
             case < 20:
                 ClimateFriendliness = ClimateFriendlinessEnum.High.ToString();
                 break;
