@@ -89,7 +89,7 @@ namespace ESGScoreCore.Controllers
                     {
                         CacheStock.SetNumberHeld(NumberHeld);
                         CacheStock.SetTotalValue();
-                        CacheStock.PercentageOfPortfolio = 1;
+                        CacheStock.PercentageOfPortfolio = 100;
                         String CacheJson = JsonSerializer.Serialize<Stock>(CacheStock);
                         portfolio = new Portfolio();
                         portfolio.AddStock(CacheStock);
@@ -104,7 +104,7 @@ namespace ESGScoreCore.Controllers
                         {
                             return NotFound();
                         }
-                        stock.PercentageOfPortfolio = 1;
+                        stock.PercentageOfPortfolio = 100;
                         portfolio = new Portfolio();
                         portfolio.AddStock(stock);
                         PortfolioController.savedPortfolios[PortfolioHash] = portfolio;

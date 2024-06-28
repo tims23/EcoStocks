@@ -36,7 +36,7 @@ public class Portfolio
         
         foreach (KeyValuePair<string, Stock?> stock in PortfolioStocks)
         {
-            float percentage = (float)stock.Value.GetTotalValue() / TotalValue;
+            float percentage = (float)stock.Value.GetTotalValue() / TotalValue * 100;
             stock.Value.PercentageOfPortfolio = percentage;
         }
         
