@@ -81,14 +81,10 @@ return (
                 </ToggableSkeleton>
                 <ToggableSkeleton variant="text"loading={loading} >
                 <Typography variant="subtitle2" color="text.secondary">
-                    {stock.wkn}
+                    {stock.ticker}
                 </Typography>
                 </ToggableSkeleton>
-                <ToggableSkeleton variant="text" loading={loading}>
-                <Typography variant="subtitle2" color="text.secondary">
-                    {stock.isin}
-                </Typography>
-                </ToggableSkeleton>
+               
             </Grid>
             <Grid item xs={3}>
             <ToggableSkeleton variant="text" loading={loading}>
@@ -110,9 +106,11 @@ return (
             <Grid item xs={3}>
                  {stock.climateFriendliness !== "NotGiven" ? 
                  ecoStatistics : 
+                 <ToggableSkeleton variant="text" loading={loading}>
                  <Typography variant="h6" color={"Highlight"}>
                     No informations given
-                </Typography>}
+                </Typography>
+                </ToggableSkeleton>}
             </Grid>
             <Grid item xs={1}>
                 {loading ? <div/> : <OptionsButton deleteAction={deleteStock} editAction={modifyStock}/>}

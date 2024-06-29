@@ -1,5 +1,6 @@
 import { PortfolioStatistics } from "@/data/PortfolioStatistics";
 import { Stock } from "@/data/Stock";
+import { cache } from "react";
 
 const BASE_URL = "https://elite-impact-427220-q3.appspot.com/v1/api"
 
@@ -11,7 +12,7 @@ export async function GET(request, {params}) {
         const requestOptions = {
             method: "GET",
             redirect: "follow",
-            next: {revalidate: 2}
+            cache: "no-store"
         };
         
     const response = await  fetch(`${BASE_URL}/Portfolio/Total?Hash=${depotID}`, requestOptions)

@@ -2,8 +2,6 @@ export class Stock {
     ticker
     image
     stockName
-    wkn
-    isin
     price
     shares
     portfolioPercentage
@@ -18,10 +16,8 @@ export class Stock {
         this.ticker = ticker
         this.image = image
         this.stockName = stockName
-        this.isin = "isin"
         this.price = price
         this.shares = shares
-        this.wkn = "wkn"
         this.portfolioPercentage = portfolioPercentage
         this.totalValue = totalValue
         this.ecoScore = ecoScore
@@ -54,7 +50,8 @@ export class Stock {
             throw new Error("Invalid climate friendliness value")
         }
         let climateFriendliness = fromJSON.ClimateFriendliness === "Undefined" ? "NotGiven" : fromJSON.ClimateFriendliness
-        
+        let wkn
+
         return new Stock(ticker, image, stockName, price, shares, totalValue, ecoScore, climateFriendliness, portfolioPercentage)
     }
 }

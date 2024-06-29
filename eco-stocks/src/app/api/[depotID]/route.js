@@ -1,4 +1,5 @@
 import { Stock } from "@/data/Stock";
+import next from "next";
 
 const BASE_URL = "https://elite-impact-427220-q3.appspot.com/v1/api"
 
@@ -7,7 +8,7 @@ export async function GET(request, {params}) {
     try {
       const response = await fetch(`${BASE_URL}/Portfolio?Hash=${depotID}`, {
         method: 'GET',
-        next: {revalidate: 2}
+        cache: 'no-store',
       });
   
       if (response.status === 404) {
@@ -32,7 +33,7 @@ export async function POST(request, {params}) {
     try {        
         const requestOptions = {
           method: "POST",
-          next: {revalidate: 2}
+          next: {revalidate: 1},
         };
     
         const ticker = searchParams.get('ticker');
@@ -64,7 +65,7 @@ export async function DELETE(request, {params}) {
     try {        
         const requestOptions = {
           method: "DELETE",
-          next: {revalidate: 2}
+          cache: "no-store"
         };
     
         const ticker = searchParams.get('ticker');

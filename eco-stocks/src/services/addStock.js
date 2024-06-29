@@ -6,6 +6,5 @@ export async function addStock(depotID, ticker, amount) {
       } 
       throw new Error(response.statusText)
   })
-  await new Promise(r => setTimeout(r, 300));
   return data
 } 
