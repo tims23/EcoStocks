@@ -12,7 +12,7 @@ export async function GET(request, {params}) {
         const requestOptions = {
             method: "GET",
             redirect: "follow",
-            cache: "no-store"
+            next: {revalidate: 1}
         };
         
     const response = await  fetch(`${BASE_URL}/Search/${ticker}`, requestOptions)

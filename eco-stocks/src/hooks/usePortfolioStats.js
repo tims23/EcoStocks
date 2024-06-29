@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 const usePortfolioStats = (depotID) => {
     const [portfolioloading, setLoading] = useState(true)
     const [portfoliostats, setstats] = useState(null)
+    const [update, setupdate] = useState(false)
 
     const fetchStats = () => {
         getPortfolioStats(depotID)
@@ -25,7 +26,14 @@ const usePortfolioStats = (depotID) => {
        fetchStats()
     }, [])
 
-    return {portfoliostats, portfolioloading}
+    useEffect(() => {
+        if (update) {
+            fetchStats()
+            setupdate(false)
+        }
+    }, [update])
+
+    return {portfoliostats, portfolioloading, setupdate}
 }
 
 export default usePortfolioStats;

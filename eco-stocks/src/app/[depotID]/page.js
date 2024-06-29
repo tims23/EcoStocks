@@ -2,7 +2,7 @@
 
 import { EXAMPLE_STOCKS } from "@/services/mockData";
 import InputDialog from "@/views/InputDialog";
-import StockListItem, { ClimateFriendliness } from "@/views/StockListItem";
+import StockListItem from "@/views/StockListItem";
 import { Add } from "@mui/icons-material";
 import { Alert, Backdrop, Button, CircularProgress, Divider, Grid, List, ListItem, ListItemText, ListSubheader, Skeleton, Snackbar, Stack, Typography } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
@@ -22,11 +22,15 @@ export default function Home({params: {depotID}}) {
 
   // set state for stocks
   const {stocks, loading, error, fetchAddStock, fetchDeleteStock} = useAPIStocks(depotID)
-  const {portfoliostats, portfolioloading} = usePortfolioStats(depotID)
+  const {portfoliostats, portfolioloading, setupdate} = usePortfolioStats(depotID)
 
   const modifyStock = (stock = "") => {
     router.push(`/${depotID}?${EDIT_PARAM}=${stock.ticker}`, undefined, { shallow: true })
   } 
+
+  useEffect(() => {
+    setupdate(true)
+  }, [stocks])
 
   const AddButton = () => {
     return (
@@ -171,7 +175,7 @@ const StockList = () => {
               </Typography>
             </ToggableSkeleton>
             <ToggableSkeleton loading={portfolioloading} variant="circular">
-            {portfoliostats ? ecoCharts: null}
+            {portfoliostats ? (portfoliostats.ecoPercentages ? ecoCharts: null) : null}
           </ToggableSkeleton>
           </Stack>
           </div>

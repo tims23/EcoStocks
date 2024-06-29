@@ -3,7 +3,7 @@ import * as React from "react";
 import { Typography, useTheme, ListItem, Grid } from "@mui/material";
 import OptionsButton from "./OptionsButton";
 import ToggableSkeleton from "./ToggableSkeleton";
-import { ClimateFriendliness, Stock } from "@/data/Stock";
+import {Stock } from "@/data/Stock";
 
 const StockListItem = ({
     stock = new Stock(),
@@ -26,27 +26,44 @@ const StockListItem = ({
 
     const getClimateFriendlinessImage = (climateFriendliness) => {
         switch (climateFriendliness) {
-            case ClimateFriendliness.LOW:
+            case "Low":
                 return "images/negative_climate.png"
-            case ClimateFriendliness.MEDIUM:
+            case "Medium":
                 return "images/medium_climate.png"
-            case ClimateFriendliness.HIGH:
+            case "High":
                 return "images/positive_climate.png"
         }
     }
 
     const getClimateFriendlinessText = (climateFriendliness) => {
         switch (climateFriendliness) {
-            case ClimateFriendliness.LOW:
+            case "Low":
                 return "Negative Climate Impact"
-            case ClimateFriendliness.MEDIUM:
+            case "Medium":
                 return "Medium Climate Impact"
-            case ClimateFriendliness.HIGH:
+            case "High":
                 return "Positive Climate Impact"
         }
     }
 
     const theme = useTheme();
+
+    const ecoStatistics = (
+            <div>
+            <ToggableSkeleton variant="text" loading={loading}>
+            <Typography color={"text.primary"} variant="h5">
+                    {stock.ecoScore} / {BEST_ECO_SCORE}
+                </Typography>
+                </ToggableSkeleton>
+                <ToggableSkeleton variant="rounded" loading={loading}>
+                <img 
+                src={getClimateFriendlinessImage(stock.climateFriendliness)}
+                alt={getClimateFriendlinessText(stock.climateFriendliness)}
+                style={{ height: 40 , width: "fit-content", justifyContent: "center"}}
+                ></img>
+                </ToggableSkeleton>
+                </div>
+    )
 
 return (
     <ListItem sx={{height: ITEM_HEIGHT, overflow: "hidden"}}>
@@ -91,18 +108,11 @@ return (
             </ToggableSkeleton>
             </Grid>
             <Grid item xs={3}>
-            <ToggableSkeleton variant="text" loading={loading}>
-            <Typography color={"text.primary"} variant="h5">
-                    {stock.ecoScore} / {BEST_ECO_SCORE}
-                </Typography>
-                </ToggableSkeleton>
-                <ToggableSkeleton variant="rounded" loading={loading}>
-                <img 
-                src={getClimateFriendlinessImage(stock.climateFriendliness)}
-                alt={getClimateFriendlinessText(stock.climateFriendliness)}
-                style={{ height: 40 , width: "fit-content", justifyContent: "center"}}
-                ></img>
-                </ToggableSkeleton>
+                 {stock.climateFriendliness !== "NotGiven" ? 
+                 ecoStatistics : 
+                 <Typography variant="h6" color={"Highlight"}>
+                    No informations given
+                </Typography>}
             </Grid>
             <Grid item xs={1}>
                 {loading ? <div/> : <OptionsButton deleteAction={deleteStock} editAction={modifyStock}/>}

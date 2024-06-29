@@ -1,4 +1,3 @@
-import { ClimateFriendliness } from "./Stock"
 
 export class PortfolioStatistics {
     totalValue
@@ -12,7 +11,7 @@ export class PortfolioStatistics {
     }) {
         if ([totalValue, ecoPercentages].includes(undefined)) {throw new Error("PortfolioStatistics: missing required parameters")}
         this.totalValue = totalValue
-        this.ecoPercentages = ecoPercentages
+        this.ecoPercentages = Object.keys(ecoPercentages).length > 0 ? ecoPercentages : null
     }
 
     static fromAPIJSON(json) {

@@ -17,7 +17,6 @@ export async function GET(request, {params}) {
       if (!response.ok) {
         return new Response(JSON.stringify({ message: 'Error fetching data' }), { status: response.status });
       }
-
       const data = await response.json();
       const stocks = data.map((stock) => Stock.constructFromAPIJSON(stock))
       return new Response(JSON.stringify([...stocks]), { status: 200 });
@@ -33,15 +32,16 @@ export async function POST(request, {params}) {
     try {        
         const requestOptions = {
           method: "POST",
-          redirect: "follow",
           next: {revalidate: 2}
         };
     
         const ticker = searchParams.get('ticker');
         const amount = searchParams.get('amount');
-        const response = await fetch(`${BASE_URL}/StockInfo/${ticker}?PortfolioHash=${depotID}&Number=${amount}`, requestOptions)
-  
-        console.log("RESPONSE", response.status)
+
+        if (amount < 1) {
+          return new Response(JSON.stringify({ message: 'Amount must be a positive number' }), { status: 300 });
+        }
+        const response = await fetch(`${BASE_URL}/StockInfo/${ticker}?PortfolioHash=${depotID}&Number=${amount}`, requestOptions)  
 
       if (response.status === 404) {
         return new Response(JSON.stringify({ message: 'Stock not found.' }), { status: response.status });
@@ -51,11 +51,8 @@ export async function POST(request, {params}) {
         return new Response(JSON.stringify({ message: 'Error fetching data' }), { status: response.status });
       }
 
-      const data = await response.json();
-      console.log("DATA", data)
-      return new Response(JSON.stringify(Stock.constructFromAPIJSON(data)), { status: 200 });
+      return new Response(JSON.stringify({ message: 'Added' }), { status: 200 });
     } catch (error) {
-        console.log("ERROR", error)
       return new Response(JSON.stringify({ message: 'Internal Server Error' }), { status: 500 });
     }
   }
@@ -67,7 +64,6 @@ export async function DELETE(request, {params}) {
     try {        
         const requestOptions = {
           method: "DELETE",
-          redirect: "follow",
           next: {revalidate: 2}
         };
     

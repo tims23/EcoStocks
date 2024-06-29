@@ -84,7 +84,7 @@ const InputDialog = ({
                             value={amountValue}
                             onChange={(event) => {
                                 const newValue = event.target.value
-                                if (isInt(newValue) || newValue === "") {
+                                if ((isInt(newValue) && newValue > 0) || newValue === "") {
                                     setAmountValue(newValue);
                                 }
                             }}

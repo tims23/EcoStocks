@@ -1,15 +1,3 @@
-/*export const ClimateFriendliness = Object.freeze({
-    LOW:   "low",
-    MEDIUM:  "medium",
-    HIGH: "high"
-});*/
-
-export class ClimateFriendliness {
-    static LOW = "low"
-    static MEDIUM = "medium"
-    static HIGH = "high"
-}
-
 export class Stock {
     ticker
     image
@@ -25,7 +13,7 @@ export class Stock {
 
     constructor(ticker, image, stockName, price, shares, totalValue, ecoScore, climateFriendliness, portfolioPercentage) {
         if ([ticker, image, stockName, price, shares, totalValue, ecoScore, climateFriendliness,portfolioPercentage].includes(undefined)) {
-            throw new Error("Invalid stock data")
+            throw new Error(`Invalid stock data (${[ticker, image, stockName, price, shares, totalValue, ecoScore, climateFriendliness,portfolioPercentage]})`)
         }
         this.ticker = ticker
         this.image = image
@@ -62,26 +50,11 @@ export class Stock {
         let image = fromJSON.Image
         let totalValue = fromJSON.TotalValue + "€"
         let portfolioPercentage = fromJSON.PercentageOfPortfolio + "%"
-        var climateFriendliness = ""
-        console.log("fromJjon", fromJSON)
-        console.log("Climate keys: " + typeof(fromJSON), Object.keys(fromJSON))
-        switch (fromJSON.ClimateFriendliness) {
-            case "Low":
-                console.log("Low")
-                climateFriendliness = ClimateFriendliness.LOW
-                break;
-            case "Medium":
-                console.log("Medium")
-                climateFriendliness = ClimateFriendliness.MEDIUM
-                break;
-            case "High":
-                console.log("High")
-                climateFriendliness = ClimateFriendliness.HIGH
-                break;
-        
-            default:
-                throw new Error("Invalid climate friendliness value")
+        if (["High", "Low", "Medium", "Undefined"].includes(fromJSON["ClimateFriendliness"]) == false) {
+            throw new Error("Invalid climate friendliness value")
         }
+        let climateFriendliness = fromJSON.ClimateFriendliness === "Undefined" ? "NotGiven" : fromJSON.ClimateFriendliness
+        
         return new Stock(ticker, image, stockName, price, shares, totalValue, ecoScore, climateFriendliness, portfolioPercentage)
     }
 }

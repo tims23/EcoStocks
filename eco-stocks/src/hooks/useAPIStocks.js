@@ -12,6 +12,7 @@ const useAPIStocks = (depotID) => {
 
     const fetchStocks = () => {
         setError(null)
+        setLoading(true)
         getStocks(depotID)
         .then((data) => {
             setStocks([...data])
@@ -29,12 +30,9 @@ const useAPIStocks = (depotID) => {
         setLoading(true)
         addStock(depotID, ticker, amount)
         .then((data) => {
-            console.log("RES", data)
-            setStocks([...stocks, data])
-            setLoading(false)
+           fetchStocks()
         })
         .catch((error) => {
-            console.log("ERR", error)
             setError(error.toString())
             setLoading(false)
         })
@@ -43,7 +41,7 @@ const useAPIStocks = (depotID) => {
     const fetchDeleteStock = (stock) => {
         setError(null)
         setLoading(true)
-        deleteStock(depotID, stock)
+        deleteStock(depotID, stock.ticker)
         .then(() => {
             setStocks(stocks.filter(s => s !== stock))
             setLoading(false)

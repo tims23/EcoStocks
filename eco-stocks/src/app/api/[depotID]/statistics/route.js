@@ -11,7 +11,7 @@ export async function GET(request, {params}) {
         const requestOptions = {
             method: "GET",
             redirect: "follow",
-            cache: "no-store"
+            next: {revalidate: 2}
         };
         
     const response = await  fetch(`${BASE_URL}/Portfolio/Total?Hash=${depotID}`, requestOptions)

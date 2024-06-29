@@ -1,8 +1,7 @@
 import { PortfolioStatistics } from "@/data/PortfolioStatistics"
-import { ClimateFriendliness } from "@/data/Stock"
 
 export async function getPortfolioStats(depotID) {
-    return await fetch(`/api/${depotID}/statistics`)
+    const data = await fetch(`/api/${depotID}/statistics`)
     .then((response) => {
         if (response.ok) {
             return response.json()
@@ -15,4 +14,6 @@ export async function getPortfolioStats(depotID) {
             return null
         }
     })
+    await new Promise(r => setTimeout(r, 500));
+    return data
 } 

@@ -1,5 +1,3 @@
-import { ClimateFriendliness } from "@/data/Stock"
-
 //create example stock
 export const EXAMPLE_APPLE_STOCK = {
     image: "https://api-ninjas-data.s3.us-west-2.amazonaws.com/logos/l476432a3e85a0aa21c23f5abd2975a89b6820d63.png",
@@ -12,7 +10,7 @@ export const EXAMPLE_APPLE_STOCK = {
     ecoScore: 10,
     ticker: "AAPL",
     totalValue: 10,
-    climateFriendliness: ClimateFriendliness.HIGH
+    climateFriendliness: "High"
   }
 
 export const EXAMPLE_AMAZON_STOCK = {
@@ -26,7 +24,7 @@ export const EXAMPLE_AMAZON_STOCK = {
     ecoScore: 10,
     ticker: "AMZN",
     totalValue: 10,
-    climateFriendliness: ClimateFriendliness.LOW
+    climateFriendliness: "Low"
     }
 
 export const EXAMPLE_STOCKS = [
