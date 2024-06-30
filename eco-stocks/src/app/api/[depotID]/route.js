@@ -3,7 +3,6 @@ import { Stock } from "@/data/Stock";
 const BASE_URL = process.env.BASE_URL
 
 export async function GET(request, {params}) {
-    console.log("Base URL: ", BASE_URL)
     let {depotID} = params;
     try {
       const response = await fetch(`${BASE_URL}/Portfolio?Hash=${depotID}`, {
