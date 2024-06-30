@@ -170,7 +170,7 @@ const StockList = () => {
           <div style={{height: "100%"}}>
           <Stack direction={"column"} sx={{height: "100%"}} justifyContent={"center"} spacing={3}>
             <ToggableSkeleton loading={portfolioloading} >
-            <Typography variant="h3" color={"HighlightText"} textAlign={"center"}>
+            <Typography variant="h3" color={"white"} textAlign={"center"}>
               {portfoliostats ? portfoliostats.totalValue : "-"} € total Value
               </Typography>
             </ToggableSkeleton>
