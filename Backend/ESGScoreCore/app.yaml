@@ -1,0 +1,32 @@
+﻿runtime: aspnetcore
+env: flex
+
+runtime_config:
+  operating_system: ubuntu22
+
+# This sample incurs costs to run on the App Engine flexible environment. 
+# The settings below are to reduce costs during testing and are not appropriate
+# for production use. For more information, see:
+# https://cloud.google.com/appengine/docs/flexible/dotnet/configuring-your-app-with-app-yaml
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 2
+  memory_gb: 2
+  disk_size_gb: 10
+endpoints_api_service:
+  name: elite-impact-427220-q3.appspot.com
+  rollout_strategy: managed
+liveness_check:
+  path: "/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+readiness_check:
+  path: "/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2

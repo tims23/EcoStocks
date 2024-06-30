@@ -1,0 +1,188 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "EcoStocks API",
+    "version": "v1"
+  },
+  "host": "elite-impact-427220-q3.appspot.com",
+  "x-google-endpoints": [
+    {
+      "name": "elite-impact-427220-q3.appspot.com",
+      "allowCors": true
+    }
+  ],
+  "basePath": "/v1",
+  "paths": {
+    "/v1/api/Portfolio/{Hash}": {
+      "delete": {
+        "operationId": "DeleteStockFromPortfolio",
+        "tags": [
+          "Portfolio"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Hash",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "Ticker",
+            "type": "string",
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v1/api/Portfolio/Total": {
+      "get": {
+        "operationId": "GetTotalPortfolioValue",
+        "tags": [
+          "Portfolio"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "Hash",
+            "type": "string",
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v1/api/Portfolio": {
+      "get": {
+        "operationId": "GetPortfolio",
+        "tags": [
+          "Portfolio"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "Hash",
+            "type": "string",
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/v1/api/Search/{Ticker}": {
+      "get": {
+        "operationId": "SearchStocks",
+        "tags": [
+          "Search"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Ticker",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/v1/api/StockInfo/{Ticker}": {
+      "get": {
+        "operationId": "GetStockInfo",
+        "tags": [
+          "StockInfo"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Ticker",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "operationId": "AddStockToPortfolio",
+        "tags": [
+          "StockInfo"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Ticker",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "PortfolioHash",
+            "type": "string",
+            "collectionFormat": "multi"
+          },
+          {
+            "in": "query",
+            "name": "Number",
+            "type": "integer",
+            "format": "int32",
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  }
+}

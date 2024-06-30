@@ -4,105 +4,135 @@ namespace ESGScoreCore;
 
 public class Stock
 {
-    private String Ticker { get; set; }
-    private String Name { get; set; }
-    private Int16 Price { get; set; }
-    private short ESGScore { get; set; }
-    private Int16 NumberHeld { get; set; }
-    private Int16 TotalValue { get; set; }
-    private String Image { get; set; }
-
-
-    public  Stock(String ticker)
+    /// <summary>
+    ///     constructor for a simple stock with numberheld information
+    /// </summary>
+    /// <param name="ticker">ticker of the stock</param>
+    /// <param name="numberHeld">amount of stock held</param>
+    public Stock(string ticker, short numberHeld)
     {
-        this.Ticker = ticker;
-    }
-    public void SetName(String name)
-    {
-        this.Name = name;
-    }
-    public void SetPrice(Int16 price)
-    {
-        this.Price = price;
-    }
-    public void SetESGScore(short esgScore)
-    {
-        this.ESGScore = esgScore;
-    }
-    public void SetNumberHeld(Int16 numberHeld)
-    {
-        this.NumberHeld = numberHeld;
-    }
-    public void SetTotalValue(Int16 totalValue)
-    {
-        this.TotalValue = totalValue;
-    }
-    public String GetTicker()
-    {
-        return this.Ticker;
-    }
-    public String GetName()
-    {
-        return this.Name;
-    }
-    public Int16 GetPrice()
-    {
-        return this.Price;
-    }
-    public Int16 GetESGScore()
-    {
-        return this.ESGScore;
-    }
-    public Int16 GetNumberHeld()
-    {
-        return this.NumberHeld;
-    }
-    public Int16 GetTotalValue()
-    {
-        return this.TotalValue;
+        Ticker = ticker;
+        NumberHeld = numberHeld;
     }
 
-    public async Task<Stock> getStockInfo()
+    /// <summary>
+    ///     constructor for a simple stock
+    /// </summary>
+    /// <param name="ticker">ticker of the stock</param>
+    public Stock(string ticker)
+    {
+        Ticker = ticker;
+    }
+
+    public string Ticker { get; }
+
+    public string? Name { get; set; }
+
+    public float Price { get; set; }
+
+    public float EsgScore { get; set; }
+
+    public short NumberHeld { get; set; }
+
+    public short TotalValue { get; set; }
+
+    public string? Image { get; set; }
+    public string? ClimateFriendliness { get; set; }
+    public float PercentageOfPortfolio { get; set; }
+
+
+    internal void SetNumberHeld(short numberHeld)
+    {
+        NumberHeld = numberHeld;
+    }
+
+    internal void SetTotalValue()
+    {
+        TotalValue = (short)(Price * NumberHeld);
+    }
+
+    internal string GetTicker()
+    {
+        return Ticker;
+    }
+
+    internal short GetTotalValue()
+    {
+        return TotalValue;
+    }
+
+    /// <summary>
+    ///     query yahoo finance api for stock information
+    /// </summary>
+    /// <returns>stock with all stock information</returns>
+    public async Task<Stock?> GetStockInfo()
     {
         var client = new HttpClient();
         var requestFinance = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri($"https://yahoo-finance127.p.rapidapi.com/esg-score/{Ticker}"),
+            RequestUri = new Uri($"https://yahoo-finance127.p.rapidapi.com/price/{Ticker}"),
             Headers =
             {
-                { "X-RapidAPI-Key", "2c0e585181msh2408993a65654bfp184d11jsnba98037211d3" },
-                { "X-RapidAPI-Host", "yahoo-finance127.p.rapidapi.com" },
-            },
+                { "x-rapidapi-key", "e704315ddamshb145bee15c22b6ap134854jsn89ea3b3ba27b" },
+                { "x-rapidapi-host", "yahoo-finance127.p.rapidapi.com" }
+            }
         };
         using (var responseFinance = await client.SendAsync(requestFinance))
         {
             responseFinance.EnsureSuccessStatusCode();
-            var body = await responseFinance.Content.ReadAsStringAsync();
-            var test = JsonNode.Parse(body);
-            Name = (String)test!["longName"]!;
-            Price = (Int16)test["regularMarketPrice"]!["raw"]!;
+            var bodyFinance = await responseFinance.Content.ReadAsStringAsync();
+            var parsedBodyFinance = JsonNode.Parse(bodyFinance);
+            Name = (string)parsedBodyFinance!["longName"]!;
+            Price = float.Parse(parsedBodyFinance["regularMarketPrice"]!["raw"]!.ToString());
+            TotalValue = (short)(Price * NumberHeld);
         }
-        ESGScore esg = new ESGScore(Ticker);
-        var esgScore = await esg.GetEsgScore();
-        this.ESGScore = esgScore;
+
+        var esg = new EsgScore(Ticker);
+        float esgScore;
+        esgScore = await esg.GetEsgScore();
+        EsgScore = 100 - esgScore;
+        switch (EsgScore)
+        {
+            case 101:
+                ClimateFriendliness = ClimateFriendlinessEnum.Undefined.ToString();
+                break;
+            case > 80:
+                ClimateFriendliness = ClimateFriendlinessEnum.High.ToString();
+                break;
+            case > 70:
+                ClimateFriendliness = ClimateFriendlinessEnum.Medium.ToString();
+                break;
+            default:
+                ClimateFriendliness = ClimateFriendlinessEnum.Low.ToString();
+                break;
+        }
+
         var requestImage = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri($"https://api.api-ninjas.com/v1/logo?ticker={Ticker}"),
             Headers =
             {
-                { "X-API-Key", "EiqHAsGoqKMFE1d64f+hTQ==h40tSqQMQufRXKaF" },
-            },
+                { "X-API-Key", "EiqHAsGoqKMFE1d64f+hTQ==h40tSqQMQufRXKaF" }
+            }
         };
         using (var responseImage = await client.SendAsync(requestImage))
         {
             responseImage.EnsureSuccessStatusCode();
-            var body = await responseImage.Content.ReadAsStringAsync();
-            var test = JsonNode.Parse(body);
-            Image = (String)test!["image"]!;
+            var bodyImage = await responseImage.Content.ReadAsStringAsync();
+            var parsedBodyImage = JsonNode.Parse(bodyImage);
+            Image = parsedBodyImage![0]!["image"]!.ToString();
         }
-        return this;
-}
 
+        return this;
+    }
+
+    private enum ClimateFriendlinessEnum
+    {
+        High,
+        Medium,
+        Low,
+        Undefined
+    }
 }
