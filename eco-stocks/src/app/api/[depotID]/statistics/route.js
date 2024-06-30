@@ -1,8 +1,6 @@
 import { PortfolioStatistics } from "@/data/PortfolioStatistics";
-import { Stock } from "@/data/Stock";
-import { cache } from "react";
 
-const BASE_URL = "https://elite-impact-427220-q3.appspot.com/v1/api"
+const BASE_URL = process.env.BASE_URL
 
 export async function GET(request, {params}) {
     let {depotID} = params;

@@ -64,7 +64,7 @@ const InputDialog = ({
                         <div>
                         <Autocomplete
                         freeSolo
-                        onInputChange={(_, value) => { settickerValue(value) }}
+                        onInputChange={(_, value) => { settickerValue(value.toUpperCase()) }}
                         sx={{ maxWidth: 228}}
                         options={tickerSuggestions}
                         value={tickerValue}

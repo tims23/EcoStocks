@@ -1,7 +1,6 @@
 import { Stock } from "@/data/Stock";
-import next from "next";
 
-const BASE_URL = "https://elite-impact-427220-q3.appspot.com/v1/api"
+const BASE_URL = process.env.BASE_URL
 
 export async function GET(request, {params}) {
     let {depotID} = params;
@@ -19,6 +18,7 @@ export async function GET(request, {params}) {
         return new Response(JSON.stringify({ message: 'Error fetching data' }), { status: response.status });
       }
       const data = await response.json();
+      console.log(data)
       const stocks = data.map((stock) => Stock.constructFromAPIJSON(stock))
       return new Response(JSON.stringify([...stocks]), { status: 200 });
     } catch (error) {
@@ -33,10 +33,10 @@ export async function POST(request, {params}) {
     try {        
         const requestOptions = {
           method: "POST",
-          next: {revalidate: 1},
+          cache: 'no-store',
         };
     
-        const ticker = searchParams.get('ticker');
+        const ticker = searchParams.get('ticker').toUpperCase();
         const amount = searchParams.get('amount');
 
         if (amount < 1) {

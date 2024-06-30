@@ -1,7 +1,4 @@
-import { Stock } from "@/data/Stock";
-import next from "next";
-
-const BASE_URL = "https://elite-impact-427220-q3.appspot.com/v1/api"
+const BASE_URL = process.env.BASE_URL
 
 export async function GET(request, {params}) {
     const searchParams = new URL(request.url).searchParams;
