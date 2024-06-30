@@ -10,6 +10,7 @@ export function middleware(request) {
   const DEPOT_ID_LENGTH = 15
 
   // Create a random string of a given length
+  // This code was copied from: https://www.programiz.com/javascript/examples/generate-random-strings
   const createRandomString = (length) => {
     let result = ''
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'

@@ -10,7 +10,7 @@ import { useStockSuggestions } from '@/hooks/useStockSuggestions';
  * It includes validation to ensure both fields are filled out correctly before allowing
  * the user to save the data.
  * 
- * @param {*} deportID: id of depot
+ * @param {*} depotID: id of depot
  * @param {*} addStock: function to add stock to depot  
  */
 const InputDialog = ({
@@ -54,15 +54,6 @@ const InputDialog = ({
         }
     }, [stockId])
 
-    // check if value is an integer
-    const isInt = (value) => {
-        if (isNaN(value)) {
-          return false;
-        }
-        var x = parseFloat(value);
-        return (x | 0) === x;
-      }
-
     return (
         <Dialog 
             onClose={closeDialog} 
@@ -101,7 +92,7 @@ const InputDialog = ({
                             value={amountValue}
                             onChange={(event) => {
                                 const newValue = event.target.value
-                                if ((isInt(newValue) && newValue > 0) || newValue === "") {
+                                if ((Number.parseInt(newValue) !== NaN && newValue > 0) || newValue === "") {
                                     setAmountValue(newValue);
                                 }
                             }}

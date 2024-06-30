@@ -46,7 +46,7 @@ export async function POST(request, {params}) {
         const amount = searchParams.get('amount');
 
         // return error message if amount is not a positive number
-        if (amount < 1 || !isInt(amount)) {
+        if (amount < 1 || Number.parseInt(amount) === NaN) {
           return new Response(JSON.stringify({ message: 'Amount must be a positive number' }), { status: 300 });
         }
 
@@ -98,12 +98,4 @@ export async function DELETE(request, {params}) {
       // return error message if an error while processing response occurs
       return new Response(JSON.stringify({ message: 'Internal Server Error' }), { status: 500 });
     }
-  }
-
-  const isInt = (value) => {
-    if (isNaN(value)) {
-      return false;
-    }
-    var x = parseFloat(value);
-    return (x | 0) === x;
   }
