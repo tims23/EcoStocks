@@ -5,25 +5,29 @@ import OptionsButton from "./OptionsButton";
 import ToggableSkeleton from "./ToggableSkeleton";
 import {Stock } from "@/data/Stock";
 
+/**
+*   
+* This code defines a Material-UI list item component for displaying a stock in a list.
+* It includes the stock image, name, ticker, price, shares, total value and eco statistics.
+* The component also includes a button to open a menu with options to edit or delete the stock.
+* 
+* @param {*} stock: stock object to display
+* @param {*} loading: boolean to indicate if the stock is loading to display a skeleton
+* @param {*} deleteStock: function to execute when delete option is clicked
+* @param {*} modifyStock: function to execute when edit option is clicked
+* 
+**/
 const StockListItem = ({
     stock = new Stock(),
     loading = false,
     deleteStock = () => {},
     modifyStock = () => {}
 })  => {
+    // Constants
     const BEST_ECO_SCORE = 100
     const ITEM_HEIGHT = 100;
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    }
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    }
-
+    // map climate friendliness to image
     const getClimateFriendlinessImage = (climateFriendliness) => {
         switch (climateFriendliness) {
             case "Low":
@@ -35,6 +39,7 @@ const StockListItem = ({
         }
     }
 
+    // map climate friendliness to text
     const getClimateFriendlinessText = (climateFriendliness) => {
         switch (climateFriendliness) {
             case "Low":
@@ -46,8 +51,7 @@ const StockListItem = ({
         }
     }
 
-    const theme = useTheme();
-
+    // Eco statistics showing esg score and climate friendliness as image
     const ecoStatistics = (
             <div>
             <ToggableSkeleton variant="text" loading={loading}>
@@ -122,28 +126,4 @@ return (
 
 };
 
-// what icon could be good to express medium climate impact?
-
 export default StockListItem;
-
-/**
- *         
-    	<div className="stock-list-item">
-            <div className="stock-list-item__image-container">
-                <img src={stock.image} alt={stock.name} className="stock-list-item__image" />
-            </div>
-            <div className="stock-list-item__generalInformations">
-                <div className="stock-list-item__name">{stock.name}</div>
-                <div className="stock-list-item__wkn">{stock.wkn}</div>
-                <div className="stock-list-item__isin">{stock.isin}</div>
-            </div>
-            <div className="stock-list-item__priceInformations">
-                <div className="stock-list-item__price">{stock.price}</div>
-                <div className="stock-list-item__shares">
-                    <div className="stock-list-item__shares__number">{stock.shares}</div>
-                    <div className="stock-list-item__shares__percentage">{stock.portfolioPercentage}</div>
-                </div>
-            </div>
-            <div className="stock-list-item__eco-score">{stock.ecoScore}/{BEST_ECO_SCORE}</div>
-        </div>
- */

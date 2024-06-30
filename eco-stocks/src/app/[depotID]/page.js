@@ -1,10 +1,9 @@
 "use client"
 
-import { EXAMPLE_STOCKS } from "@/services/mockData";
 import InputDialog from "@/views/InputDialog";
 import StockListItem from "@/views/StockListItem";
 import { Add } from "@mui/icons-material";
-import { Alert, Backdrop, Button, CircularProgress, Divider, Grid, List, ListItem, ListItemText, ListSubheader, Skeleton, Snackbar, Stack, Typography } from "@mui/material";
+import { Alert, Backdrop, Button, CircularProgress, Divider, Grid, List, Snackbar, Stack, Typography } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,25 +12,32 @@ import useAPIStocks from "../../hooks/useAPIStocks";
 import usePortfolioStats from "@/hooks/usePortfolioStats";
 import ToggableSkeleton from "@/views/ToggableSkeleton";
 
-// Home page
-export default function Home({params: {depotID}}) {   
+// Home page for depot using the depot ID as a parameter from the url
+export default function Home({params: {depotID}}) {  
+  // Constants 
   const EDIT_PARAM = 'edit'
   const SNACKBAR_DURATION = 6000
 
+  // navigation
   const router = useRouter()
 
   // set state for stocks
   const {stocks, loading, error, fetchAddStock, fetchDeleteStock} = useAPIStocks(depotID)
+
+  // set state for portfolio stats
   const {portfoliostats, portfolioloading, setupdate} = usePortfolioStats(depotID)
 
+  // opens edit page for stock
   const modifyStock = (stock = "") => {
     router.push(`/${depotID}?${EDIT_PARAM}=${stock.ticker}`, undefined, { shallow: true })
   } 
 
+  // update statistics when stocks change
   useEffect(() => {
     setupdate(true)
   }, [stocks])
 
+  // Button to add new stock
   const AddButton = () => {
     return (
         <Link href={`/${depotID}?${EDIT_PARAM}`} shallow={true}>
@@ -42,6 +48,7 @@ export default function Home({params: {depotID}}) {
     );
   }
 
+  // Pie chart for eco statistics
   const ecoCharts = (
     <PieChart
     slotProps={{
@@ -69,15 +76,7 @@ export default function Home({params: {depotID}}) {
 />
 )
 
-const loadingBackdrop = (
-  <Backdrop
-    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-    open={loading}
-  >
-    <CircularProgress color="inherit" />
-  </Backdrop>
-)
-
+// List of stocks
 const StockList = () => { 
   const stockItems = (
     stocks.map((stock, index) => (
@@ -93,6 +92,7 @@ const StockList = () => {
       ))
   )
 
+  // Alert if no stocks are in depot
   const noItems = (
       <Alert sx={{width:"100%"}} variant="filled" severity="info" action={
         loading ? <CircularProgress sx={{color: "white"}} size={20} /> : <div/>
@@ -119,6 +119,7 @@ const StockList = () => {
   );
 }
 
+// Snackbar Alert for errors
   const ErrorAlert = () => {
     const [open, setOpen] = useState(false);
   
@@ -151,7 +152,7 @@ const StockList = () => {
   </div>
     )
   }
-
+ 
   return (
     <main className="min-h-screen flex-col items-center justify-between p-24">
       <Grid container spacing={2} alignItems={"stretch"}>

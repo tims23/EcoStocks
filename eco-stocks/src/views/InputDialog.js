@@ -3,41 +3,58 @@ import { Button, Typography, Autocomplete, Card, CardContent, Dialog, DialogTitl
 import {useSearchParams, useRouter } from "next/navigation";
 import { useStockSuggestions } from '@/hooks/useStockSuggestions';
 
+/**
+ * 
+ * This code defines a Material-UI dialog component for adding or editing a new stock to a depot, 
+ * featuring inputs for selecting a stock ticker with auto suggestion and specifying the amount. 
+ * It includes validation to ensure both fields are filled out correctly before allowing
+ * the user to save the data.
+ * 
+ * @param {*} deportID: id of depot
+ * @param {*} addStock: function to add stock to depot  
+ */
 const InputDialog = ({
     depotID,
     addStock = (stock) => {}
 }) => {
+    // Constants
     const EDIT_PARAM = 'edit'
-    const LETTERS_FOR_SUGGESTIONS = 2
 
     const router = useRouter()
 
+    // get search params from url
     const searchParams = useSearchParams()
     const shouldEdit = searchParams.has(EDIT_PARAM)
     const stockId = searchParams.get(EDIT_PARAM)
     
+    // set state ticker for stock and amount
     const [tickerValue, settickerValue] = useState(stockId || "") 
     const [amountValue, setAmountValue] = useState()
 
+    // get suggestions logic for stock ticker
     const tickerSuggestions = useStockSuggestions(tickerValue)
 
+    // close dialog and reset values
     const closeDialog = () => {
         settickerValue("")
         setAmountValue("")
         router.push(`/${depotID}`, undefined, { shallow: true })
     }
 
+    // save data to depot and close dialog
     const saveData = () => {
         addStock(tickerValue, amountValue)
         closeDialog()
     }
 
+    // get ticker suggestions when stockId changes and is not empty
     useEffect(() => {
         if (stockId) {
             settickerValue(stockId)
         }
     }, [stockId])
 
+    // check if value is an integer
     const isInt = (value) => {
         if (isNaN(value)) {
           return false;
