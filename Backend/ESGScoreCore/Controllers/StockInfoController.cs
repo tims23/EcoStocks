@@ -1,123 +1,110 @@
 using System.Collections.Concurrent;
-using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-// Add this for ConcurrentDictionary
 
-namespace ESGScoreCore.Controllers
+namespace ESGScoreCore.Controllers;
+
+[ApiController]
+[Route("v1/api/StockInfo")]
+[Produces("application/json")]
+public class StockInfoController : ControllerBase
 {
-    [ApiController]
-    [Route("v1/api/StockInfo")]
-    [Produces("application/json")]
-    public class StockInfoController : ControllerBase
+    private static readonly ConcurrentDictionary<string, Stock?> Cache = new();
+
+
+    /// <summary>
+    ///     Simple Get request to get stock information from yahoo finance API
+    /// </summary>
+    /// <param name="Ticker">Ticker of the Stock that gets searched</param>
+    /// <returns>returns stock information with a status of 200 or a 404 if no information is found</returns>
+    [HttpGet("{Ticker}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Get(string Ticker)
     {
-        private static readonly ConcurrentDictionary<string, Stock?> Cache = new();
-
-        private readonly ILogger<StockInfoController> _logger;
-        
-        
-        
-
-        public StockInfoController(ILogger<StockInfoController> logger)
+        if (Cache.TryGetValue(Ticker, out var cacheStock))
         {
-            _logger = logger;
+            var cacheJson = JsonSerializer.Serialize(cacheStock!);
+            return Ok(cacheJson);
         }
-        
-        [HttpGet("{Ticker}")]
-        public async Task<IActionResult> Get(string Ticker)
-        {
 
-            if (Cache.TryGetValue(Ticker, out Stock CacheStock))
+        var stock = new Stock(Ticker);
+        stock = await stock.GetStockInfo();
+        if (stock == null) return NotFound();
+        Cache[Ticker] = stock; // Assuming score.ToString() is the desired format
+        var stockJson = JsonSerializer.Serialize(stock);
+        return Ok(stockJson);
+    }
+
+    /// <summary>
+    ///     Post request to add a stock to a portfolio and get its information
+    ///     Either adds the stock to an existing portfolio or creates a new one
+    /// </summary>
+    /// <param name="Ticker">Ticker for the stock wanted </param>
+    /// <param name="PortfolioHash">Hash of the portfolio that should be added onto</param>
+    /// <param name="NumberHeld">Number of stocks held in portfolio</param>
+    /// <returns>returns 200 and stock information when everything is okay, returns not found when stock cant be found</returns>
+    [HttpPost("{Ticker}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Post(string Ticker, [FromQuery(Name = "PortfolioHash")] string PortfolioHash,
+        [FromQuery(Name = "Number")] short NumberHeld)
+    {
+        try
+        {
+            if (PortfolioController.SavedPortfolios.TryGetValue(PortfolioHash, out var portfolio))
             {
-                _logger.LogInformation("Cache hit for ticker: {Ticker}", Ticker);
-                String CacheJson = JsonSerializer.Serialize<Stock>(CacheStock);
-                return Ok(CacheJson);
+                if (Cache.TryGetValue(Ticker, out var cacheStock))
+                {
+                    cacheStock?.SetNumberHeld(NumberHeld);
+                    cacheStock?.SetTotalValue();
+                    portfolio?.AddStock(cacheStock);
+                    portfolio?.SetTotalValue();
+                    portfolio?.SetPercentages();
+                    var cacheJson = JsonSerializer.Serialize(cacheStock);
+
+                    return Ok(cacheJson);
+                }
+
+                var stock = new Stock(Ticker, NumberHeld);
+                stock = await stock.GetStockInfo();
+                if (stock == null) return NotFound();
+                portfolio?.AddStock(stock);
+                portfolio?.SetTotalValue();
+                portfolio?.SetPercentages();
+                var stockJson = JsonSerializer.Serialize(stock);
+                Cache[Ticker] = stock;
+                return Ok(stockJson);
             }
             else
             {
-                _logger.LogInformation("Cache miss for ticker: {Ticker}", Ticker);
-                Stock? stock = new Stock(Ticker);
-                stock = await stock.getStockInfo();
-                if (stock == null)
+                if (Cache.TryGetValue(Ticker, out var cacheStock))
                 {
-                    return NotFound();
+                    cacheStock?.SetNumberHeld(NumberHeld);
+                    cacheStock?.SetTotalValue();
+                    cacheStock!.PercentageOfPortfolio = 100;
+                    var cacheJson = JsonSerializer.Serialize(cacheStock);
+                    portfolio = new Portfolio();
+                    portfolio.AddStock(cacheStock);
+                    PortfolioController.SavedPortfolios[PortfolioHash] = portfolio;
+                    return Ok(cacheJson);
                 }
-                Cache[Ticker] = stock; // Assuming score.ToString() is the desired format
-                var stockJson = JsonSerializer.Serialize<Stock>(stock);
+
+                var stock = new Stock(Ticker, NumberHeld);
+                stock = await stock.GetStockInfo();
+                if (stock == null) return NotFound();
+                stock.PercentageOfPortfolio = 100;
+                portfolio = new Portfolio();
+                portfolio.AddStock(stock);
+                PortfolioController.SavedPortfolios[PortfolioHash] = portfolio;
+                var stockJson = JsonSerializer.Serialize(stock);
+                Cache[Ticker] = stock;
                 return Ok(stockJson);
             }
         }
-
-        [HttpPost("{Ticker}")]
-        public async Task<IActionResult> Post(string Ticker, [FromQuery(Name = "PortfolioHash")] string PortfolioHash,
-            [FromQuery(Name = "Number")] short NumberHeld)
+        catch (Exception e)
         {
-            try
-            {
-                if (PortfolioController.savedPortfolios.TryGetValue(PortfolioHash, out Portfolio? portfolio))
-                {
-                    if (Cache.TryGetValue(Ticker, out Stock? CacheStock))
-                    {
-                        CacheStock.SetNumberHeld(NumberHeld);
-                        CacheStock.SetTotalValue();
-                        portfolio.AddStock(CacheStock);
-                        portfolio.SetTotalValue();
-                        portfolio.SetPercentages();
-                        String CacheJson = JsonSerializer.Serialize<Stock>(CacheStock);
-
-                        return Ok(CacheJson);
-                    }
-                    else
-                    {
-                        Stock? stock = new Stock(Ticker, NumberHeld);
-                        stock = await stock.getStockInfo();
-                        if (stock == null)
-                        {
-                            return NotFound();
-                        }
-                        portfolio.AddStock(stock);
-                        portfolio.SetTotalValue();
-                        portfolio.SetPercentages();
-                        String stockJson = JsonSerializer.Serialize<Stock>(stock);
-                        Cache[Ticker] = stock;
-                        return Ok(stockJson);
-                    }
-                }
-                else
-                {
-                    if (Cache.TryGetValue(Ticker, out Stock? CacheStock))
-                    {
-                        CacheStock.SetNumberHeld(NumberHeld);
-                        CacheStock.SetTotalValue();
-                        CacheStock.PercentageOfPortfolio = 100;
-                        String CacheJson = JsonSerializer.Serialize<Stock>(CacheStock);
-                        portfolio = new Portfolio();
-                        portfolio.AddStock(CacheStock);
-                        PortfolioController.savedPortfolios[PortfolioHash] = portfolio;
-                        return Ok(CacheJson);
-                    }
-                    else
-                    {
-                        Stock? stock = new Stock(Ticker, NumberHeld);
-                        stock = await stock.getStockInfo();
-                        if (stock == null)
-                        {
-                            return NotFound();
-                        }
-                        stock.PercentageOfPortfolio = 100;
-                        portfolio = new Portfolio();
-                        portfolio.AddStock(stock);
-                        PortfolioController.savedPortfolios[PortfolioHash] = portfolio;
-                        String stockJson = JsonSerializer.Serialize<Stock>(stock);
-                        Cache[Ticker] = stock;
-                        return Ok(stockJson);
-                    }
-                }
-            } catch (Exception e)
-            {
-                
-                return NotFound();
-            }
+            return NotFound();
         }
     }
 }

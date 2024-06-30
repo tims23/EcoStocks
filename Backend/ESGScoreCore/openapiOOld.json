@@ -1,10 +1,16 @@
-﻿{
+{
   "swagger": "2.0",
   "info": {
-    "title": "openapi",
+    "title": "EcoStocks API",
     "version": "v1"
   },
   "host": "elite-impact-427220-q3.appspot.com",
+  "x-google-endpoints": [
+    {
+      "name": "elite-impact-427220-q3.appspot.com",
+      "allowCors": true
+    }
+  ],
   "basePath": "/v1",
   "paths": {
     "/api/Portfolio/{Hash}": {

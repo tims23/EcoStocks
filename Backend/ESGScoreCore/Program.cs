@@ -1,8 +1,6 @@
-using System.Collections.Concurrent;
-using ESGScoreCore;
 using Microsoft.OpenApi.Models;
 
-var AllowSpecificOrigins = "AllowSpecificOrigins";
+var allowSpecificOrigins = "AllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,13 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen((c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "openapi", Version = "v1" });
-}));
+builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "openapi", Version = "v1" }); });
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(AllowSpecificOrigins,
+    options.AddPolicy(allowSpecificOrigins,
         policy =>
         {
             policy.WithOrigins("https://eco-stocks.vercel.app")
@@ -29,19 +24,16 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-    app.UseSwagger(c =>
-    {
-        c.SerializeAsV2 = true;
-    });
-    app.UseSwaggerUI();
+app.UseSwagger(c => { c.SerializeAsV2 = true; });
+app.UseSwaggerUI();
 
 
 app.UseHttpsRedirection();
-app.UseCors(AllowSpecificOrigins);
+app.UseCors(allowSpecificOrigins);
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapGet("/health", () => Results.Ok("Healthy"));
+
 
 
 app.Run();
