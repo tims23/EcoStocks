@@ -14,10 +14,11 @@ In this project, we aim to provide resources and tools for individuals intereste
 
 ## Getting Started
 To get started with EcoStocks, follow these steps:
-1. Clone the repository: `git clone https://github.com/your-username/eco-stocks.git`
-2. Install the required dependencies: `npm install`
-4. create a .env.local file wiht BASE_URL=https://elite-impact-427220-q3.appspot.com/v1/api on the root level
-3. Run the application: `npm run dev`
+1. Clone the repository: `git clone https://github.com/tims23/eco-stocks.git`
+2. navigate to the frontend part: `cd eco-stocks`
+3. Install the required dependencies: `npm install`
+4. create a .env.local file wiht BASE_URL=https://elite-impact-427220-q3.appspot.com/v1/api or the local server on the root level
+5. Run the application: `npm run dev`
 
 ## Features
 - Real-time stock data from environmentally conscious companies
