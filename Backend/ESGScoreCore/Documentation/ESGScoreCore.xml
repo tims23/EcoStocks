@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ESGScoreCore</name>
+    </assembly>
+    <members>
+        <member name="M:ESGScoreCore.Controllers.PortfolioController.Delete(System.String,System.String)">
+            <summary>
+                Delete request to remove a stock from a portfolio
+            </summary>
+            <param name="Hash">Portfolio hash to identify the portfolio to remove from</param>
+            <param name="ticker">Stock ticker to identify stock to remove</param>
+            <returns>returns 200 when stock deleted</returns>
+        </member>
+        <member name="M:ESGScoreCore.Controllers.PortfolioController.Get(System.String)">
+            <summary>
+                Get request to get the total value of a portfolio including the percentages of each climate friendliness
+            </summary>
+            <param name="Hash">Porfolio hash to identify the portfolio </param>
+            <returns>returns the total value of a portfolio and the percentages as an object with a 200</returns>
+        </member>
+        <member name="M:ESGScoreCore.Controllers.PortfolioController.GetPortfolio(System.String)">
+            <summary>
+                Get request to get the stocks in a portfolio
+                if no portfolio is found a new one is created
+            </summary>
+            <param name="Hash">Porfolio hash to identify the portfolio</param>
+            <returns>List of stocks</returns>
+        </member>
+        <member name="M:ESGScoreCore.Controllers.SearchController.Get(System.String)">
+            <summary>
+                Get request to search for a stock based on its Ticker/Part of a ticker
+            </summary>
+            <param name="Ticker">Ticker/Part of ticker searched for</param>
+            <returns>list of stocks with similar tickers and a 200</returns>
+        </member>
+        <member name="M:ESGScoreCore.Controllers.StockInfoController.Get(System.String)">
+            <summary>
+                Simple Get request to get stock information from yahoo finance API
+            </summary>
+            <param name="Ticker">Ticker of the Stock that gets searched</param>
+            <returns>returns stock information with a status of 200 or a 404 if no information is found</returns>
+        </member>
+        <member name="M:ESGScoreCore.Controllers.StockInfoController.Post(System.String,System.String,System.Int16)">
+            <summary>
+                Post request to add a stock to a portfolio and get its information
+                Either adds the stock to an existing portfolio or creates a new one
+            </summary>
+            <param name="Ticker">Ticker for the stock wanted </param>
+            <param name="PortfolioHash">Hash of the portfolio that should be added onto</param>
+            <param name="NumberHeld">Number of stocks held in portfolio</param>
+            <returns>returns 200 and stock information when everything is okay, returns not found when stock cant be found</returns>
+        </member>
+        <member name="M:ESGScoreCore.EsgScore.GetEsgScore">
+            <summary>
+                Get ESGScore from yahoo finance API
+            </summary>
+            <returns>returns ESG score</returns>
+        </member>
+        <member name="M:ESGScoreCore.Portfolio.#ctor">
+            <summary>
+                Constructor for Portfolio
+            </summary>
+        </member>
+        <member name="M:ESGScoreCore.Portfolio.AddStock(ESGScoreCore.Stock)">
+            <summary>
+                Adds a stock to the portfolio
+            </summary>
+            <param name="stock">stock to add</param>
+        </member>
+        <member name="M:ESGScoreCore.Portfolio.RemoveStock(System.String)">
+            <summary>
+                Removes a stock from the portfolio
+            </summary>
+            <param name="ticker">ticker of stock to remove</param>
+        </member>
+        <member name="M:ESGScoreCore.Portfolio.SetTotalValue">
+            <summary>
+                Set total value of portfolio
+            </summary>
+        </member>
+        <member name="M:ESGScoreCore.Portfolio.SetPercentages">
+            <summary>
+                Set individual stock percentages of portfolio
+            </summary>
+        </member>
+        <member name="M:ESGScoreCore.Portfolio.SetClimatePercentages">
+            <summary>
+                Set climate friendliness percentages
+            </summary>
+        </member>
+        <member name="M:ESGScoreCore.Portfolio.GetPortfolio">
+            <summary>
+                get underlying portfolio dict
+            </summary>
+            <returns>portfoliodict</returns>
+        </member>
+        <member name="M:ESGScoreCore.Stock.#ctor(System.String,System.Int16)">
+            <summary>
+                constructor for a simple stock with numberheld information
+            </summary>
+            <param name="ticker">ticker of the stock</param>
+            <param name="numberHeld">amount of stock held</param>
+        </member>
+        <member name="M:ESGScoreCore.Stock.#ctor(System.String)">
+            <summary>
+                constructor for a simple stock
+            </summary>
+            <param name="ticker">ticker of the stock</param>
+        </member>
+        <member name="M:ESGScoreCore.Stock.GetStockInfo">
+            <summary>
+                query yahoo finance api for stock information
+            </summary>
+            <returns>stock with all stock information</returns>
+        </member>
+    </members>
+</doc>
