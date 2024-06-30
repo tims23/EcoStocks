@@ -51,7 +51,7 @@ export class Stock {
         let ticker = fromJSON.Ticker
         let stockName = fromJSON.Name
         let price = fromJSON.Price + "€"
-        let ecoScore = fromJSON.ESGScore
+        let ecoScore = fromJSON.EsgScore
         let shares = fromJSON.NumberHeld
         let image = fromJSON.Image
         let totalValue = fromJSON.TotalValue + "€"
